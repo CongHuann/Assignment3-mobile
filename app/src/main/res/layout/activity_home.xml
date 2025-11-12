@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="15dp"
-        android:fontFamily="@font/OpenSans"
+        android:fontFamily="@font/opensans"
         android:text="FitRoutine"
         android:textColor="#DDDDDD"
         android:textSize="40sp"
@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="70dp"
-        android:fontFamily="@font/OpenSans"
+        android:fontFamily="@font/opensans"
         android:text="Transform your fitness journey"
         android:textColor="#DDDDDD"
         android:textSize="20sp"
@@ -88,7 +88,7 @@
                         android:id="@+id/tvWorkouts"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/OpenSans"
+                        android:fontFamily="@font/opensans"
                         android:text="Workouts"
                         android:textColor="@android:color/black"
                         android:textSize="22sp" />
@@ -97,7 +97,7 @@
                         android:id="@+id/tvWorkoutsSub"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/OpenSans"
+                        android:fontFamily="@font/opensans"
                         android:text="Build your strength"
                         android:textColor="@android:color/black"
                         android:textSize="14sp" />
@@ -140,7 +140,7 @@
                         android:text="Exercises"
                         android:textColor="@android:color/black"
                         android:textSize="22sp"
-                        android:fontFamily="@font/OpenSans" />
+                        android:fontFamily="@font/opensans" />
                     <TextView
                         android:id="@+id/tvExcercisesSub"
                         android:layout_width="wrap_content"
@@ -148,7 +148,7 @@
                         android:text="List of excercises"
                         android:textColor="@android:color/black"
                         android:textSize="14sp"
-                        android:fontFamily="@font/OpenSans"/>
+                        android:fontFamily="@font/opensans"/>
                 </LinearLayout>
                 <ImageView
                     android:id="@+id/icFoodExcercises"
@@ -187,7 +187,7 @@
                         android:text="Meal Plan"
                         android:textColor="@android:color/black"
                         android:textSize="22sp"
-                        android:fontFamily="@font/OpenSans" />
+                        android:fontFamily="@font/opensans" />
                     <TextView
                         android:id="@+id/tvMealPlanSub"
                         android:layout_width="wrap_content"
@@ -195,7 +195,7 @@
                         android:text="Track your nutrition"
                         android:textColor="@android:color/black"
                         android:textSize="14sp"
-                        android:fontFamily="@font/OpenSans"/>
+                        android:fontFamily="@font/opensans"/>
                 </LinearLayout>
                 <ImageView
                     android:id="@+id/icFoodMealPlan"
@@ -214,7 +214,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="396dp"
-        android:fontFamily="@font/OpenSans"
+        android:fontFamily="@font/opensans"
         android:text="Quick Stats"
         android:textColor="@android:color/white"
         android:textSize="20sp"
@@ -268,7 +268,7 @@
                         android:text="Streak"
                         android:textColor="@android:color/white"
                         android:textSize="15dp"
-                        android:fontFamily="@font/OpenSans"/>
+                        android:fontFamily="@font/opensans"/>
                 </LinearLayout>
 
                 <TextView
@@ -278,7 +278,7 @@
                     android:text="4 days"
                     android:textSize="24sp"
                     android:textColor="@android:color/white"
-                    android:fontFamily="@font/OpenSans"
+                    android:fontFamily="@font/opensans"
                     android:layout_marginTop="6dp"
                     android:layout_marginStart="2dp"/>
 
@@ -288,7 +288,7 @@
                     android:id="@+id/tvStreakSub"
                     android:text="Workout day"
                     android:textColor="@android:color/white"
-                    android:fontFamily="@font/OpenSans"
+                    android:fontFamily="@font/opensans"
                     android:layout_marginStart="2dp"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -326,7 +326,7 @@
                         android:text="THIS WEEK"
                         android:textColor="@android:color/white"
                         android:textSize="15dp"
-                        android:fontFamily="@font/OpenSans"/>
+                        android:fontFamily="@font/opensans"/>
                 </LinearLayout>
 
                 <TextView
@@ -336,7 +336,7 @@
                     android:text="5h"
                     android:textSize="24sp"
                     android:textColor="@android:color/white"
-                    android:fontFamily="@font/OpenSans"
+                    android:fontFamily="@font/opensans"
                     android:layout_marginTop="6dp"
                     android:layout_marginStart="2dp"/>
 
@@ -347,7 +347,7 @@
                     android:text="Workout time"
                     android:textColor="@android:color/white"
                     android:textSize="13sp"
-                    android:fontFamily="@font/OpenSans"/>
+                    android:fontFamily="@font/opensans"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
