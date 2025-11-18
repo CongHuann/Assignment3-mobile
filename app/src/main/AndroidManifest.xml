@@ -11,6 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Assignment3">
+
+        <!-- MainActivity - Màn hình chính (Home) -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -18,10 +20,28 @@
             android:theme="@style/Theme.Assignment3">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- WorkoutPlannerActivity - Màn hình Weekly Planner -->
+        <activity
+            android:name=".WorkoutPlannerActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Assignment3" />
+
+        <!-- WorkoutDetailActivity - Màn hình Exercise Detail (tạo sau) -->
+        <activity
+            android:name=".ExercisesActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Assignment3" />
+
+        <activity
+            android:name=".WorkoutSessionActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Assignment3" />
+
     </application>
 
 </manifest>

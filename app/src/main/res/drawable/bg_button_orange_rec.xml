@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- shadow layer: nhẹ phía dưới -->
+    <item android:bottom="4dp" android:right="0dp" android:left="0dp" android:top="0dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#22000000"/> <!-- shadow color -->
+            <corners android:radius="16dp"/>
+        </shape>
+    </item>
+
+    <!-- main button -->
+    <item android:top="0dp" android:left="0dp" android:right="0dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/accent_orange"/>
+            <corners android:radius="16dp"/>
+        </shape>
+    </item>
+</layer-list>

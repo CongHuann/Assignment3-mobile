@@ -1,5 +1,6 @@
 package com.example.assignment3
 
+import android.content.Intent
 import android.os.Bundle
 import android.graphics.Color
 import android.widget.*
@@ -22,8 +23,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+        supportActionBar?.hide()
 
-        //card views
+        // Card views
         cardWorkouts = findViewById(R.id.cardWorkouts)
         cardExcercises = findViewById(R.id.cardExcercises)
         cardMealPlan = findViewById(R.id.cardMealPlan)
@@ -35,36 +37,47 @@ class MainActivity : AppCompatActivity() {
         tvStreak = findViewById(R.id.tvStreak)
         tvWorkTime = findViewById(R.id.tvWorkTime)
 
-        // Stats demo-------------------
+        // Stats demo
         tvStreak.text = "4 days"
         tvWorkTime.text = "5h"
 
         setCardsDefault()
 
+        //  WorkoutPlannerActivity
         cardWorkouts.setOnClickListener {
             setCardsDefault()
             // Highlight selected
             cardWorkouts.setCardBackgroundColor(ContextCompat.getColor(this, R.color.accent_orange))
             icDumbell.setColorFilter(Color.BLACK)
-            // TODO: Chuyển qua màn hình Workouts
-            Toast.makeText(this, "Go to Workouts", Toast.LENGTH_SHORT).show()
+
+            //  Weekly Planner
+            val intent = Intent(this, WorkoutPlannerActivity::class.java)
+            startActivity(intent)
         }
 
+        // Click Exercises
         cardExcercises.setOnClickListener {
             setCardsDefault()
             cardExcercises.setCardBackgroundColor(ContextCompat.getColor(this, R.color.accent_orange))
             icFoodExcercises.setColorFilter(Color.BLACK)
-            // TODO: Chuyển qua màn hình Excercises
+
             Toast.makeText(this, "Go to Exercises", Toast.LENGTH_SHORT).show()
         }
 
+        // Click Meal Plan
         cardMealPlan.setOnClickListener {
             setCardsDefault()
             cardMealPlan.setCardBackgroundColor(ContextCompat.getColor(this, R.color.accent_orange))
             icFoodMealPlan.setColorFilter(Color.BLACK)
-            // TODO: Chuyển qua màn hình Meal Plan
+
             Toast.makeText(this, "Go to Meal Plan", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Reset cards to default when back to MainActivity
+        setCardsDefault()
     }
 
     private fun setCardsDefault() {

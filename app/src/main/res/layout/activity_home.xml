@@ -14,7 +14,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="15dp"
         android:fontFamily="@font/opensans"
-        android:text="FitRoutine"
+        android:text="@string/TrackFit"
         android:textColor="#DDDDDD"
         android:textSize="40sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -28,7 +28,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="70dp"
         android:fontFamily="@font/opensans"
-        android:text="Transform your fitness journey"
+        android:text="@string/transform"
         android:textColor="#DDDDDD"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -89,7 +89,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/opensans"
-                        android:text="Workouts"
+                        android:text="@string/workouts"
                         android:textColor="@android:color/black"
                         android:textSize="22sp" />
 
@@ -98,7 +98,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/opensans"
-                        android:text="Build your strength"
+                        android:text="@string/build"
                         android:textColor="@android:color/black"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -137,7 +137,7 @@
                         android:id="@+id/tvExcercises"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Exercises"
+                        android:text="@string/excercises"
                         android:textColor="@android:color/black"
                         android:textSize="22sp"
                         android:fontFamily="@font/opensans" />
@@ -145,7 +145,7 @@
                         android:id="@+id/tvExcercisesSub"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="List of excercises"
+                        android:text="@string/list_of_ex"
                         android:textColor="@android:color/black"
                         android:textSize="14sp"
                         android:fontFamily="@font/opensans"/>
@@ -184,7 +184,7 @@
                         android:id="@+id/tvMealPlan"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Meal Plan"
+                        android:text="@string/mealplan"
                         android:textColor="@android:color/black"
                         android:textSize="22sp"
                         android:fontFamily="@font/opensans" />
@@ -192,7 +192,7 @@
                         android:id="@+id/tvMealPlanSub"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Track your nutrition"
+                        android:text="@string/track_ur_nu"
                         android:textColor="@android:color/black"
                         android:textSize="14sp"
                         android:fontFamily="@font/opensans"/>
@@ -215,7 +215,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="396dp"
         android:fontFamily="@font/opensans"
-        android:text="Quick Stats"
+        android:text="@string/quick_stats"
         android:textColor="@android:color/white"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -265,9 +265,9 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Streak"
+                        android:text="@string/streak"
                         android:textColor="@android:color/white"
-                        android:textSize="15dp"
+                        android:textSize="15sp"
                         android:fontFamily="@font/opensans"/>
                 </LinearLayout>
 
@@ -275,7 +275,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/tvStreak"
-                    android:text="4 days"
+                    android:text="1 days"
                     android:textSize="24sp"
                     android:textColor="@android:color/white"
                     android:fontFamily="@font/opensans"
@@ -286,7 +286,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/tvStreakSub"
-                    android:text="Workout day"
+                    android:text="@string/workout_day"
                     android:textColor="@android:color/white"
                     android:fontFamily="@font/opensans"
                     android:layout_marginStart="2dp"/>
@@ -323,9 +323,9 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="THIS WEEK"
+                        android:text="@string/this_week"
                         android:textColor="@android:color/white"
-                        android:textSize="15dp"
+                        android:textSize="15sp"
                         android:fontFamily="@font/opensans"/>
                 </LinearLayout>
 
@@ -333,7 +333,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/tvWorkTime"
-                    android:text="5h"
+                    android:text="2h"
                     android:textSize="24sp"
                     android:textColor="@android:color/white"
                     android:fontFamily="@font/opensans"
@@ -344,7 +344,7 @@
                     android:id="@+id/tvWorkoutTimeSub"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Workout time"
+                    android:text="@string/workout_time"
                     android:textColor="@android:color/white"
                     android:textSize="13sp"
                     android:fontFamily="@font/opensans"/>

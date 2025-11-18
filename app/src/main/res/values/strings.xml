@@ -1,5 +1,18 @@
 <resources>
-    <string name="app_name">Assignment3</string>
+    <string name="app_name">TrackFit</string>
     <string name="bench_press">Bench Press</string>
     <string name="Chest">Chest</string>
+    <string name="workout_day">Workout day</string>
+    <string name="TrackFit">TrackFit</string>
+    <string name="transform">Transform your fitness journey</string>
+    <string name="workouts">Workouts</string>
+    <string name="build">Build your strength</string>
+    <string name="excercises">Exercises</string>
+    <string name="list_of_ex">List of excercises</string>
+    <string name="mealplan">Meal Plan</string>
+    <string name="track_ur_nu">Track your nutrition</string>
+    <string name="quick_stats">Quick Stats</string>
+    <string name="this_week">This week</string>
+    <string name="workout_time">Workout time</string>
+    <string name="streak">Streak</string>
 </resources>

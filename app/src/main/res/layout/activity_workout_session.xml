@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/primary_black">
+
+    <!-- Header -->
+    <LinearLayout
+        android:id="@+id/llHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_circle_gray"
+            android:src="@drawable/arrow_big_left"
+            app:tint="@android:color/white"/>
+
+        <TextView
+            android:id="@+id/tvWorkoutTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="16dp"
+            android:text="Monday - Push Day"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:fontFamily="@font/opensans"/>
+
+        <TextView
+            android:id="@+id/tvTimer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00:00"
+            android:textColor="@color/accent_orange"
+            android:textSize="20sp"
+            android:fontFamily="@font/opensans"
+            android:layout_marginEnd="12dp"/>
+
+        <ImageButton
+            android:id="@+id/btnPause"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/pause"
+            app:tint="@android:color/white"/>
+    </LinearLayout>
+
+    <!-- Progress Info -->
+    <LinearLayout
+        android:id="@+id/llProgress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        app:layout_constraintTop_toBottomOf="@id/llHeader">
+
+        <TextView
+            android:id="@+id/tvExerciseProgress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Exercise 1 of 3 • Set 1 of 4"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:fontFamily="@font/opensans"/>
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:layout_marginTop="8dp"
+            android:progressTint="@color/accent_orange"
+            android:progressBackgroundTint="#3A3A3A"
+            android:progress="25"/>
+
+        <TextView
+            android:id="@+id/tvProgressPercentage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="25% (1/10 sets)"
+            android:textColor="#ABABAB"
+            android:textSize="14sp"
+            android:fontFamily="@font/opensans"
+            android:layout_marginTop="4dp"/>
+    </LinearLayout>
+
+    <!-- Main Content (ScrollView) -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/llProgress"
+        app:layout_constraintBottom_toTopOf="@id/llBottom"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Current Exercise Card -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardCurrentExercise"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="20dp"
+                app:cardBackgroundColor="@color/secondary_gray"
+                app:cardElevation="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="24dp">
+
+                    <!-- Exercise Name -->
+                    <TextView
+                        android:id="@+id/tvExerciseName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="BENCH PRESS"
+                        android:textColor="@android:color/white"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:fontFamily="@font/opensans"
+                        android:layout_gravity="center_horizontal"/>
+
+                    <TextView
+                        android:id="@+id/tvExerciseTarget"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Target: 8-10 reps • Chest"
+                        android:textColor="#585858"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/opensans"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="4dp"/>
+
+                    <!-- Weight Input -->
+                    <LinearLayout
+                        android:id="@+id/llWeightInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:layout_marginTop="24dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Weight (kg):"
+                            android:textColor="@android:color/white"
+                            android:textSize="18sp"
+                            android:fontFamily="@font/opensans"/>
+
+                        <ImageButton
+                            android:id="@+id/btnWeightMinus"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="@drawable/bg_circle_gray"
+                            android:src="@drawable/minus"
+                            android:layout_marginStart="16dp"
+                            app:tint="@android:color/white"/>
+
+                        <EditText
+                            android:id="@+id/etWeight"
+                            android:layout_width="100dp"
+                            android:layout_height="56dp"
+                            android:background="@drawable/bg_excercise_item"
+                            android:text="50"
+                            android:textColor="@android:color/white"
+                            android:textSize="24sp"
+                            android:fontFamily="@font/opensans"
+                            android:gravity="center"
+                            android:inputType="numberDecimal"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginEnd="12dp"/>
+
+                        <ImageButton
+                            android:id="@+id/btnWeightPlus"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="@drawable/bg_circle_gray"
+                            android:src="@drawable/plus"
+                            app:tint="@android:color/white"/>
+                    </LinearLayout>
+
+                    <!-- Reps Input -->
+                    <LinearLayout
+                        android:id="@+id/llRepsInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:layout_marginTop="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Reps done:"
+                            android:textColor="@android:color/white"
+                            android:textSize="18sp"
+                            android:fontFamily="@font/opensans"/>
+
+                        <ImageButton
+                            android:id="@+id/btnRepsMinus"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="@drawable/bg_circle_gray"
+                            android:src="@drawable/minus"
+                            android:layout_marginStart="16dp"
+                            app:tint="@android:color/white"/>
+
+                        <EditText
+                            android:id="@+id/etReps"
+                            android:layout_width="100dp"
+                            android:layout_height="56dp"
+                            android:background="@drawable/bg_excercise_item"
+                            android:text="10"
+                            android:textColor="@android:color/white"
+                            android:textSize="24sp"
+                            android:fontFamily="@font/opensans"
+                            android:gravity="center"
+                            android:inputType="number"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginEnd="12dp"/>
+
+                        <ImageButton
+                            android:id="@+id/btnRepsPlus"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="@drawable/bg_circle_gray"
+                            android:src="@drawable/plus"
+                            app:tint="@android:color/white"/>
+                    </LinearLayout>
+
+                    <!-- Rest Timer (Hidden initially) -->
+                    <LinearLayout
+                        android:id="@+id/llRestTimer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:layout_marginTop="24dp"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="💤 REST TIME"
+                            android:textColor="@android:color/white"
+                            android:textSize="18sp"
+                            android:fontFamily="@font/opensans"/>
+
+                        <TextView
+                            android:id="@+id/tvRestTimer"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="00:60"
+                            android:textColor="@color/accent_orange"
+                            android:textSize="48sp"
+                            android:fontFamily="@font/opensans"
+                            android:textStyle="bold"
+                            android:layout_marginTop="8dp"/>
+
+                        <ProgressBar
+                            android:id="@+id/progressBarRest"
+                            style="@android:style/Widget.ProgressBar.Horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="12dp"
+                            android:layout_marginTop="16dp"
+                            android:progressTint="@color/accent_orange"
+                            android:progressBackgroundTint="#3A3A3A"
+                            android:progress="100"
+                            android:max="100"/>
+
+                        <Button
+                            android:id="@+id/btnSkipRest"
+                            android:layout_width="wrap_content"
+                            android:layout_height="48dp"
+                            android:background="@drawable/bg_outline_orange"
+                            android:text="⏭️ Skip Rest"
+                            android:textColor="@color/accent_orange"
+                            android:textSize="16sp"
+                            android:fontFamily="@font/opensans"
+                            android:layout_marginTop="16dp"/>
+                    </LinearLayout>
+
+                    <!-- Action Buttons -->
+                    <LinearLayout
+                        android:id="@+id/llActionButtons"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="24dp">
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/btnSkipSet"
+                            android:layout_width="0dp"
+                            android:layout_height="56dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_outline_orange"
+                            android:text="⏭️ Skip Set"
+                            android:textAllCaps="false"
+                            android:textColor="@android:color/white"
+                            android:textSize="16sp"
+                            android:fontFamily="@font/opensans"
+                            android:layout_marginEnd="8dp"/>
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/btnCompleteSet"
+                            android:layout_width="0dp"
+                            android:layout_height="56dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_button_orange_rec"
+                            android:text="✅ Complete Set"
+                            android:textAllCaps="false"
+                            android:textColor="@android:color/black"
+                            android:textSize="16sp"
+                            android:fontFamily="@font/opensans"
+                            android:layout_marginStart="8dp"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Set History -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Set History"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:fontFamily="@font/opensans"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="12dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvSetHistory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <!-- Next Exercise Preview -->
+            <TextView
+                android:id="@+id/tvNextExercise"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Next: Shoulder Press (3×10-12 • Shoulders)"
+                android:textColor="#ABABAB"
+                android:textSize="16sp"
+                android:fontFamily="@font/opensans"
+                android:layout_marginTop="24dp"
+                android:gravity="center"/>
+
+            <Button
+                android:id="@+id/btnSkipExercise"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:background="@drawable/bg_outline_orange"
+                android:text="⏭️ Skip Exercise"
+                android:textColor="@color/accent_orange"
+                android:textSize="16sp"
+                android:fontFamily="@font/opensans"
+                android:layout_gravity="center"
+                android:layout_marginTop="12dp"/>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Bottom Bar -->
+    <LinearLayout
+        android:id="@+id/llBottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/secondary_gray"
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:id="@+id/tvTotalVolume"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total Volume: 0 kg"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:fontFamily="@font/opensans"
+            android:layout_gravity="center_horizontal"/>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
