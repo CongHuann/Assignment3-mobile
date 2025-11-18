@@ -10,7 +10,7 @@
     android:clickable="true"
     android:focusable="true">
 
-    <!-- ✅ CHECKBOX MỚI -->
+    <!-- CHECKBOX-->
     <CheckBox
         android:id="@+id/cbSelected"
         android:layout_width="wrap_content"

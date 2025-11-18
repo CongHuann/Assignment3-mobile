@@ -38,8 +38,8 @@ class MainActivity : AppCompatActivity() {
         tvWorkTime = findViewById(R.id.tvWorkTime)
 
         // Stats demo
-        tvStreak.text = "4 days"
-        tvWorkTime.text = "5h"
+        tvStreak.text = "1 days"
+        tvWorkTime.text = "2h"
 
         setCardsDefault()
 
@@ -60,8 +60,10 @@ class MainActivity : AppCompatActivity() {
             setCardsDefault()
             cardExcercises.setCardBackgroundColor(ContextCompat.getColor(this, R.color.accent_orange))
             icFoodExcercises.setColorFilter(Color.BLACK)
+            //  Exercises Activity
+            val intent = Intent(this, ExercisesActivity::class.java)
+            startActivity(intent)
 
-            Toast.makeText(this, "Go to Exercises", Toast.LENGTH_SHORT).show()
         }
 
         // Click Meal Plan
@@ -70,7 +72,6 @@ class MainActivity : AppCompatActivity() {
             cardMealPlan.setCardBackgroundColor(ContextCompat.getColor(this, R.color.accent_orange))
             icFoodMealPlan.setColorFilter(Color.BLACK)
 
-            Toast.makeText(this, "Go to Meal Plan", Toast.LENGTH_SHORT).show()
         }
     }
 

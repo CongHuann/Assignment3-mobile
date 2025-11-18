@@ -71,10 +71,8 @@ class WorkoutPlannerActivity : AppCompatActivity() {
 
                     Toast.makeText(this, message, Toast.LENGTH_LONG).show()
 
-                    // ✅ TODO: SAVE TO DATABASE
                     // saveWorkoutHistory(dayIndex, totalVolume, totalDuration, completedExercises)
 
-                    // ✅ TODO: UPDATE STREAK
                     // updateStreak()
 
                 } else {
@@ -166,7 +164,7 @@ class WorkoutPlannerActivity : AppCompatActivity() {
         "Rest" to "Recovery day"
     )
 
-    // ✅ DATA - TẤT CẢ NGÀY BẮT ĐẦU TRỐNG
+    //  DATA
     private val workoutData = mutableMapOf(
         0 to WorkoutDay("", false),
         1 to WorkoutDay("", false),
@@ -223,9 +221,10 @@ class WorkoutPlannerActivity : AppCompatActivity() {
 
         // Click Add Exercise
         btnAddExercise.setOnClickListener {
-            android.util.Log.e("WorkoutPlanner", "🔵 Add Exercise button clicked")
+            android.util.Log.e("WorkoutPlanner", "🔵 Add Exercise button clicked - SELECTION MODE")
 
             val intent = Intent(this, ExercisesActivity::class.java)
+            intent.putExtra("SELECTION_MODE", true)  // ✅ SELECTION MODE
             addExerciseLauncher.launch(intent)
         }
 

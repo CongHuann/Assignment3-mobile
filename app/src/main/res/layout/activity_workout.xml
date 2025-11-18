@@ -33,7 +33,7 @@
         app:layout_constraintStart_toStartOf="@+id/btnBack"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- ✅ WEEKDAYS ROW - GIỮ NGUYÊN -->
+    <!--  WEEKDAYS ROW -->
     <HorizontalScrollView
         android:id="@+id/scrollWeek"
         android:layout_width="match_parent"
@@ -243,7 +243,7 @@
 
     </HorizontalScrollView>
 
-    <!-- ✅ NESTED SCROLL VIEW ĐỂ SCROLL ĐƯỢC -->
+    <!--  NESTED SCROLL VIEW -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -288,7 +288,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Focus: Chest, Shoulders, Triceps"
-                    android:textColor="#BABABA"
+                    android:textColor="#585858"
                     android:textSize="16sp"
                     android:fontFamily="@font/opensans"
                     android:layout_marginTop="2dp"/>
@@ -321,14 +321,13 @@
                         android:padding="8dp" />
                 </LinearLayout>
 
-                <!-- ✅ EXERCISE LIST - HIỂN THỊ TẤT CẢ EXERCISES -->
+                <!-- EXERCISE LIST-->
                 <LinearLayout
                     android:id="@+id/llExerciseList"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:layout_marginTop="24dp">
-                    <!-- Exercises được add động từ code -->
                 </LinearLayout>
 
                 <!-- Add Exercise Button -->

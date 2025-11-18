@@ -31,6 +31,7 @@ class ExercisesActivity : AppCompatActivity() {
     private var allExercises = listOf<Exercise>()
     private var filteredExercises = mutableListOf<Exercise>()
     private var selectedMuscleGroup = "All"
+    private var isSelectionMode = false
 
     // SAVE EXERCISES
     private val selectedExercises = mutableSetOf<Exercise>()
@@ -43,6 +44,8 @@ class ExercisesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_exercises)
         supportActionBar?.hide()
+
+        isSelectionMode = intent.getBooleanExtra("SELECTION_MODE", false)
 
         initViews()
         loadExercises()
@@ -143,10 +146,11 @@ class ExercisesActivity : AppCompatActivity() {
         // NEW ADAPTER and SELECTION MODE
         exerciseAdapter = ExerciseListAdapter(
             filteredExercises,
-            selectedExercises
-        ) {
-            updateBottomBar()
-        }
+            selectedExercises,
+            { updateBottomBar() },
+            true
+        )
+
 
         rvExercises.layoutManager = LinearLayoutManager(this)
         rvExercises.adapter = exerciseAdapter

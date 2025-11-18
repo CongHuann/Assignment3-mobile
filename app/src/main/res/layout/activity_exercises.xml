@@ -67,7 +67,7 @@
         android:paddingEnd="24dp"
         android:clipToPadding="false"/>
 
-    <!-- ✅ BOTTOM BAR MỚI -->
+    <!-- BOTTOM BAR -->
     <LinearLayout
         android:id="@+id/llBottomBar"
         android:layout_width="match_parent"

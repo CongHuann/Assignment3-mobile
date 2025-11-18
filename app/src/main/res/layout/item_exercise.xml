@@ -15,7 +15,7 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <!-- ✅ TÊN BÀI TẬP - PHẢI CÓ TEXTCOLOR WHITE -->
+        <!-- Exercise name -->
         <TextView
             android:id="@+id/tvExerciseName"
             android:layout_width="wrap_content"
@@ -25,7 +25,7 @@
             android:textSize="18sp"
             android:fontFamily="@font/opensans"/>
 
-        <!-- ✅ CHI TIẾT BÀI TẬP -->
+        <!-- Exercise detail -->
         <TextView
             android:id="@+id/tvExerciseDetails"
             android:layout_width="wrap_content"
@@ -37,7 +37,7 @@
             android:layout_marginTop="4dp"/>
     </LinearLayout>
 
-    <!-- NÚT DELETE -->
+    <!-- DELETE -->
     <ImageButton
         android:id="@+id/btnDelete"
         android:layout_width="32dp"
