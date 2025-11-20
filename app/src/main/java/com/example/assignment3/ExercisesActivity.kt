@@ -10,7 +10,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.assignment3.adapters.ExerciseListAdapter
+import com.example.assignment3.adapters.ExerciseAdapter
 import com.example.assignment3.models.Exercise
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -21,7 +21,7 @@ class ExercisesActivity : AppCompatActivity() {
     private lateinit var tvTitle: TextView
     private lateinit var chipGroup: ChipGroup
     private lateinit var rvExercises: RecyclerView
-    private lateinit var exerciseAdapter: ExerciseListAdapter
+    private lateinit var exerciseAdapter: ExerciseAdapter
 
     // BOTTOM BAR
     private lateinit var llBottomBar: LinearLayout
@@ -144,7 +144,7 @@ class ExercisesActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
         // NEW ADAPTER and SELECTION MODE
-        exerciseAdapter = ExerciseListAdapter(
+        exerciseAdapter = ExerciseAdapter(
             filteredExercises,
             selectedExercises,
             { updateBottomBar() },

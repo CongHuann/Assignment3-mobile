@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="16dp"
+    app:cardBackgroundColor="@color/secondary_gray"
+    app:cardElevation="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvExerciseName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bench Press"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/opensans"/>
+
+            <TextView
+                android:id="@+id/tvExerciseDetails"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4 × 8-10 • Chest"
+                android:textColor="#ABABAB"
+                android:textSize="14sp"
+                android:fontFamily="@font/opensans"
+                android:layout_marginTop="4dp"/>
+        </LinearLayout>
+
+        <!-- ✅ THÊM TextView cho Difficulty -->
+        <TextView
+            android:id="@+id/tvDifficulty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Intermediate"
+            android:textSize="12sp"
+            android:fontFamily="@font/opensans"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:background="@drawable/bg_excercise_item"
+            android:layout_marginStart="12dp"/>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
