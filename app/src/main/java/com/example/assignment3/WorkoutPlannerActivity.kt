@@ -9,16 +9,23 @@ import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.example.assignment3.models.Exercise
+import com.example.assignment3.models.WorkoutEntity
+import com.example.assignment3.repository.WorkoutRepository
+import kotlinx.coroutines.launch
 
 class WorkoutPlannerActivity : AppCompatActivity() {
 
-    // ✅ ActivityResultLauncher cho Workout Session
+
+    private lateinit var repository: WorkoutRepository
+
+    //  ActivityResultLauncher for Workout Session
     private val workoutSessionLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         android.util.Log.e("WorkoutPlanner", "🔵 ========== Workout Session Result ==========")
-        android.util.Log.e("WorkoutPlanner", "resultCode: ${result.resultCode} (expected: $RESULT_OK = ${RESULT_OK})")
+        android.util.Log.e("WorkoutPlanner", "resultCode: ${result.resultCode} (expected: $RESULT_OK = $RESULT_OK)")
 
         if (result.resultCode == RESULT_OK && result.data != null) {
             val data = result.data!!
@@ -43,37 +50,33 @@ class WorkoutPlannerActivity : AppCompatActivity() {
                 android.util.Log.e("WorkoutPlanner", "  Before: $workout")
 
                 if (workout != null) {
-                    // ✅ MARK AS COMPLETED
+                    //  MARK AS COMPLETED
                     workoutData[dayIndex] = WorkoutDay(workout.workoutType, true)
+
+                    //  SAVE TO DATABASE
+                    saveWorkoutToDatabase(dayIndex)
 
                     android.util.Log.e("WorkoutPlanner", "  After: ${workoutData[dayIndex]}")
 
-                    // ✅ UPDATE UI
+                    // UPDATE UI
                     updateWeekdaysUI()
 
-                    // ✅ RELOAD IF SELECTED DAY
                     if (dayIndex == selectedDayIndex) {
                         loadWorkoutForDay(dayIndex)
                     }
 
-                    // ✅ SHOW SUCCESS MESSAGE
+                    // SHOW SUCCESS MESSAGE
                     val minutes = totalDuration / 60
                     val seconds = totalDuration % 60
                     val message = """
-                        🎉 Workout Completed!
+                        Workout Completed!
                         
                         Time: ${minutes}m ${seconds}s
                         Volume: ${String.format("%.1f", totalVolume)} kg
                         Exercises: $completedExercises/$totalExercises
-                        
-                        Great job! 💪
                     """.trimIndent()
 
                     Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-
-                    // saveWorkoutHistory(dayIndex, totalVolume, totalDuration, completedExercises)
-
-                    // updateStreak()
 
                 } else {
                     android.util.Log.e("WorkoutPlanner", "❌ workout is NULL!")
@@ -88,7 +91,7 @@ class WorkoutPlannerActivity : AppCompatActivity() {
         android.util.Log.e("WorkoutPlanner", "========================================")
     }
 
-    // ✅ ActivityResultLauncher cho Add Exercise
+    // ActivityResultLauncher for Add Exercise
     private val addExerciseLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -125,6 +128,18 @@ class WorkoutPlannerActivity : AppCompatActivity() {
 
                 android.util.Log.e("WorkoutPlanner", "  Adding: ${newExercise.name}")
                 exercisesMap[selectedDayIndex]?.add(newExercise)
+            }
+
+            //  SAVE TO DATABASE
+            lifecycleScope.launch {
+                try {
+                    for (i in ids.indices) {
+                        repository.addExerciseToDay(selectedDayIndex, ids[i])
+                    }
+                    android.util.Log.e("WorkoutPlanner", "✅ Saved ${ids.size} exercises to DB")
+                } catch (e: Exception) {
+                    android.util.Log.e("WorkoutPlanner", "❌ Error saving exercises: ${e.message}")
+                }
             }
 
             loadExercisesForDay(selectedDayIndex)
@@ -164,7 +179,7 @@ class WorkoutPlannerActivity : AppCompatActivity() {
         "Rest" to "Recovery day"
     )
 
-    //  DATA
+    // DATA (in-memory cache)
     private val workoutData = mutableMapOf(
         0 to WorkoutDay("", false),
         1 to WorkoutDay("", false),
@@ -192,10 +207,67 @@ class WorkoutPlannerActivity : AppCompatActivity() {
 
         android.util.Log.e("WorkoutPlanner", "🟢 ========== onCreate started ==========")
 
+        //  GET REPOSITORY
+        repository = (application as MyApplication).repository
+
         initViews()
         setupClickListeners()
         setupWeekdaysSelector()
-        loadWorkoutForDay(0)
+
+        //  LOAD DATA FROM DATABASE
+        loadWorkoutsFromDatabase()
+    }
+
+    private fun loadWorkoutsFromDatabase() {
+        lifecycleScope.launch {
+            try {
+
+                // Load workouts
+                val workouts = repository.getAllWorkouts()
+                workouts.forEach { workout ->
+                    workoutData[workout.dayIndex] = WorkoutDay(
+                        workoutType = workout.workoutType,
+                        isCompleted = workout.isCompleted
+                    )
+                }
+
+                // Load exercises for each day
+                for (i in 0..6) {
+                    val exercises = repository.getExercisesForDay(i)
+                    exercisesMap[i] = exercises.toMutableList()
+                }
+
+
+                updateWeekdaysUI()
+                loadWorkoutForDay(0)
+
+            } catch (e: Exception) {
+                android.util.Log.e("WorkoutPlanner", "❌ Error loading: ${e.message}")
+                e.printStackTrace()
+
+                // Fallback: use default empty data
+                updateWeekdaysUI()
+                loadWorkoutForDay(0)
+            }
+        }
+    }
+
+    private fun saveWorkoutToDatabase(dayIndex: Int) {
+        lifecycleScope.launch {
+            try {
+                val workout = workoutData[dayIndex]
+                if (workout != null) {
+                    repository.updateWorkout(
+                        WorkoutEntity(
+                            dayIndex = dayIndex,
+                            workoutType = workout.workoutType,
+                            isCompleted = workout.isCompleted
+                        )
+                    )
+                }
+            } catch (e: Exception) {
+            }
+        }
     }
 
     private fun initViews() {
@@ -214,27 +286,22 @@ class WorkoutPlannerActivity : AppCompatActivity() {
             finish()
         }
 
-        // Click title để chọn workout type
         tvDayTitle.setOnClickListener {
             showWorkoutTypeDialog()
         }
 
-        // Click Add Exercise
         btnAddExercise.setOnClickListener {
-            android.util.Log.e("WorkoutPlanner", "🔵 Add Exercise button clicked - SELECTION MODE")
 
             val intent = Intent(this, ExercisesActivity::class.java)
-            intent.putExtra("SELECTION_MODE", true)  // ✅ SELECTION MODE
+            intent.putExtra("SELECTION_MODE", true)
+            intent.putExtra("DAY_INDEX", selectedDayIndex)  // PASS DAY_INDEX
             addExerciseLauncher.launch(intent)
         }
 
-        // Click Start Workout
         btnStartWorkout.setOnClickListener {
-            android.util.Log.e("WorkoutPlanner", "🔵 ========== START WORKOUT CLICKED ==========")
 
             val selectedDay = workoutData[selectedDayIndex]
 
-            // ✅ CHECK: Đã chọn workout type chưa?
             if (selectedDay?.workoutType.isNullOrEmpty()) {
                 android.util.Log.e("WorkoutPlanner", "❌ No workout type selected")
                 Toast.makeText(this, "Please select workout type first", Toast.LENGTH_SHORT).show()
@@ -242,14 +309,12 @@ class WorkoutPlannerActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // ✅ CHECK: Có phải Rest day?
             if (selectedDay?.workoutType == "Rest") {
                 android.util.Log.e("WorkoutPlanner", "❌ Rest day")
                 Toast.makeText(this, "This is a rest day!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            // ✅ CHECK: Có exercises không?
             val exercises = exercisesMap[selectedDayIndex]
             if (exercises.isNullOrEmpty()) {
                 android.util.Log.e("WorkoutPlanner", "❌ No exercises")
@@ -258,17 +323,12 @@ class WorkoutPlannerActivity : AppCompatActivity() {
             }
 
             android.util.Log.e("WorkoutPlanner", "✅ All checks passed, launching WorkoutSessionActivity")
-            android.util.Log.e("WorkoutPlanner", "  Day: ${weekdays[selectedDayIndex]}")
-            android.util.Log.e("WorkoutPlanner", "  Type: ${selectedDay.workoutType}")
-            android.util.Log.e("WorkoutPlanner", "  Exercises: ${exercises.size}")
 
-            // ✅ PREPARE INTENT
             val intent = Intent(this, WorkoutSessionActivity::class.java)
             intent.putExtra("DAY_INDEX", selectedDayIndex)
             intent.putExtra("DAY_NAME", weekdays[selectedDayIndex])
             intent.putExtra("WORKOUT_TYPE", selectedDay.workoutType)
 
-            // Convert exercises to arrays (vì Exercise không implement Serializable)
             val ids = exercises.map { it.id }.toIntArray()
             val names = exercises.map { it.name }.toTypedArray()
             val setsArray = exercises.map { it.sets }.toIntArray()
@@ -282,9 +342,6 @@ class WorkoutPlannerActivity : AppCompatActivity() {
             intent.putExtra("EXERCISE_MUSCLES", musclesArray)
             intent.putExtra("EXERCISE_COUNT", exercises.size)
 
-            android.util.Log.e("WorkoutPlanner", "Launching WorkoutSessionActivity...")
-            android.util.Log.e("WorkoutPlanner", "========================================")
-
             workoutSessionLauncher.launch(intent)
         }
     }
@@ -293,14 +350,12 @@ class WorkoutPlannerActivity : AppCompatActivity() {
         for (i in 0 until llWeekdays.childCount) {
             val dayLayout = llWeekdays.getChildAt(i) as LinearLayout
 
-            // Click thường - chọn ngày
             dayLayout.setOnClickListener {
                 selectedDayIndex = i
                 updateWeekdaysUI()
                 loadWorkoutForDay(i)
             }
 
-            // Long press - edit ngày
             dayLayout.setOnLongClickListener {
                 showEditDayDialog(i)
                 true
@@ -310,7 +365,6 @@ class WorkoutPlannerActivity : AppCompatActivity() {
     }
 
     private fun updateWeekdaysUI() {
-        android.util.Log.e("WorkoutPlanner", "🔄 ========== updateWeekdaysUI() ==========")
 
         for (i in 0 until llWeekdays.childCount) {
             val dayLayout = llWeekdays.getChildAt(i) as LinearLayout
@@ -320,21 +374,15 @@ class WorkoutPlannerActivity : AppCompatActivity() {
 
             val workout = workoutData[i]
 
-            android.util.Log.e("WorkoutPlanner", "Day $i (${weekdays[i]}): workoutType='${workout?.workoutType}', isCompleted=${workout?.isCompleted}")
-
             when {
-                // ✅ PRIORITY 1: COMPLETED (HIGHEST)
                 workout?.isCompleted == true -> {
-                    android.util.Log.e("WorkoutPlanner", "  → ✅ COMPLETED (GREEN + CHECK)")
                     circleView.background = ContextCompat.getDrawable(this, R.drawable.bg_green)
                     iconView.setImageResource(R.drawable.check)
                     iconView.setColorFilter(Color.WHITE)
                     textView.setTextColor(Color.WHITE)
                 }
 
-                // PRIORITY 2: SELECTED
                 i == selectedDayIndex -> {
-                    android.util.Log.e("WorkoutPlanner", "  → Selected (orange)")
                     circleView.background = ContextCompat.getDrawable(this, R.drawable.bg_square_light)
                     when (workout?.workoutType) {
                         "Rest" -> iconView.setImageResource(R.drawable.rest)
@@ -344,18 +392,14 @@ class WorkoutPlannerActivity : AppCompatActivity() {
                     textView.setTextColor(Color.WHITE)
                 }
 
-                // PRIORITY 3: REST DAY
                 workout?.workoutType == "Rest" -> {
-                    android.util.Log.e("WorkoutPlanner", "  → Rest (gray + bed icon)")
                     circleView.background = ContextCompat.getDrawable(this, R.drawable.bg_circle_gray)
                     iconView.setImageResource(R.drawable.rest)
                     iconView.setColorFilter(Color.GRAY)
                     textView.setTextColor(Color.GRAY)
                 }
 
-                // PRIORITY 4: DEFAULT (NOT COMPLETED)
                 else -> {
-                    android.util.Log.e("WorkoutPlanner", "  → Not completed (gray + dumbbell)")
                     circleView.background = ContextCompat.getDrawable(this, R.drawable.bg_circle_gray)
                     iconView.setImageResource(R.drawable.dumbbell)
                     iconView.setColorFilter(Color.GRAY)
@@ -363,15 +407,12 @@ class WorkoutPlannerActivity : AppCompatActivity() {
                 }
             }
         }
-
-        android.util.Log.e("WorkoutPlanner", "========================================")
     }
 
     private fun loadWorkoutForDay(dayIndex: Int) {
         val workout = workoutData[dayIndex]
         val dayName = weekdays[dayIndex]
 
-        // ✅ HIỂN THỊ TITLE
         if (workout?.workoutType.isNullOrEmpty()) {
             tvDayTitle.text = "$dayName - Day"
             tvDayFocus.text = "Tap title to select workout type"
@@ -387,8 +428,6 @@ class WorkoutPlannerActivity : AppCompatActivity() {
         llExerciseList.removeAllViews()
 
         val exercises = exercisesMap[dayIndex] ?: mutableListOf()
-
-        android.util.Log.e("WorkoutPlanner", "Loading ${exercises.size} exercises for day $dayIndex")
 
         for ((index, exercise) in exercises.withIndex()) {
             val exerciseView = layoutInflater.inflate(R.layout.item_exercise, llExerciseList, false)
@@ -441,12 +480,15 @@ class WorkoutPlannerActivity : AppCompatActivity() {
 
             workoutData[dayIndex] = WorkoutDay(selectedType, currentCompleted)
 
+            // ✅ SAVE TO DATABASE
+            saveWorkoutToDatabase(dayIndex)
+
             if (dayIndex == selectedDayIndex) {
                 loadWorkoutForDay(dayIndex)
             }
 
             updateWeekdaysUI()
-            Toast.makeText(this, "${weekdays[dayIndex]} changed to $selectedType", Toast.LENGTH_SHORT).show()
+
         }
 
         builder.show()
@@ -458,7 +500,8 @@ class WorkoutPlannerActivity : AppCompatActivity() {
         val newCompleted = !workout.isCompleted
         workoutData[dayIndex] = WorkoutDay(workout.workoutType, newCompleted)
 
-        android.util.Log.e("WorkoutPlanner", "Day $dayIndex completion toggled: $newCompleted")
+        // ✅ SAVE TO DATABASE
+        saveWorkoutToDatabase(dayIndex)
 
         updateWeekdaysUI()
 
@@ -477,6 +520,12 @@ class WorkoutPlannerActivity : AppCompatActivity() {
 
         builder.setPositiveButton("Delete") { dialog, _ ->
             exercisesMap[dayIndex]?.removeAt(exerciseIndex)
+
+            // ✅ DELETE FROM DATABASE
+            lifecycleScope.launch {
+                repository.removeExerciseFromDay(dayIndex, exercise.id)
+            }
+
             loadExercisesForDay(dayIndex)
             Toast.makeText(this, "${exercise.name} deleted", Toast.LENGTH_SHORT).show()
             dialog.dismiss()

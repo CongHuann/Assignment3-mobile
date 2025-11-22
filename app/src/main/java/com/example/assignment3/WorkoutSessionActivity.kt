@@ -1,10 +1,12 @@
 package com.example.assignment3
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.assignment3.adapters.SetHistoryAdapter
@@ -12,11 +14,15 @@ import com.example.assignment3.models.Exercise
 import com.example.assignment3.models.ExerciseSession
 import com.example.assignment3.models.SetData
 import com.example.assignment3.models.WorkoutSession
+import com.example.assignment3.repository.WorkoutRepository
+import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.concurrent.scheduleAtFixedRate
-import android.content.Intent
 
 class WorkoutSessionActivity : AppCompatActivity() {
+
+    // ROOM REPOSITORY
+    private lateinit var repository: WorkoutRepository
 
     // Views
     private lateinit var btnBack: ImageButton
@@ -71,6 +77,9 @@ class WorkoutSessionActivity : AppCompatActivity() {
 
             setContentView(R.layout.activity_workout_session)
             android.util.Log.e("WorkoutSession", "✅ setContentView success")
+
+            // ✅ GET REPOSITORY
+            repository = (application as MyApplication).repository
 
             initViews()
             android.util.Log.e("WorkoutSession", "✅ initViews success")
@@ -150,7 +159,7 @@ class WorkoutSessionActivity : AppCompatActivity() {
                 return
             }
 
-            android.util.Log.e("WorkoutSession", "Received ${count} exercises")
+            android.util.Log.e("WorkoutSession", "Received $count exercises")
 
             // Rebuild exercises from arrays
             exercises = mutableListOf()
@@ -181,7 +190,6 @@ class WorkoutSessionActivity : AppCompatActivity() {
             // Convert exercises to ExerciseSessions
             exercises.forEach { exercise ->
                 val exerciseSession = ExerciseSession(exercise)
-                // Initialize sets as null (locked)
                 for (i in 0 until exercise.sets) {
                     exerciseSession.sets.add(null)
                 }
@@ -260,7 +268,6 @@ class WorkoutSessionActivity : AppCompatActivity() {
     }
 
     private fun loadCurrentExercise() {
-
         android.util.Log.e("WorkoutSession", "========== loadCurrentExercise() ==========")
         android.util.Log.e("WorkoutSession", "currentExerciseIndex: $currentExerciseIndex")
         android.util.Log.e("WorkoutSession", "workoutSession.exercises.size: ${workoutSession.exercises.size}")
@@ -366,34 +373,26 @@ class WorkoutSessionActivity : AppCompatActivity() {
         currentSetIndex++
 
         if (currentSetIndex >= exerciseSession.exercise.sets) {
-            // ✅ EXERCISE COMPLETED
             exerciseSession.isCompleted = true
 
             android.util.Log.e("WorkoutSession", "Exercise ${exerciseSession.exercise.name} completed!")
-            android.util.Log.e("WorkoutSession", "Current exercise index: $currentExerciseIndex")
-            android.util.Log.e("WorkoutSession", "Total exercises: ${workoutSession.exercises.size}")
 
             currentExerciseIndex++
             currentSetIndex = 0
 
-            // ✅ CHECK BOUNDS TRƯỚC KHI TIẾP TỤC
             if (currentExerciseIndex >= workoutSession.exercises.size) {
                 android.util.Log.e("WorkoutSession", "✅ All exercises completed! Calling finishWorkout()...")
                 finishWorkout()
-                return  // ← ✅ QUAN TRỌNG: RETURN ĐỂ KHÔNG CHẠY CODE BÊN DƯỚI
+                return
             } else {
-                android.util.Log.e("WorkoutSession", "Moving to next exercise: ${workoutSession.exercises[currentExerciseIndex].exercise.name}")
                 loadCurrentExercise()
             }
         } else {
-            // ✅ STILL HAVE SETS
-            android.util.Log.e("WorkoutSession", "Set $currentSetIndex/${exerciseSession.exercise.sets} completed, starting rest timer")
             startRestTimer(exerciseSession.restTime)
         }
 
         updateProgress()
 
-        // ✅ THÊM CHECK NULL
         if (::setHistoryAdapter.isInitialized) {
             setHistoryAdapter.notifyDataSetChanged()
         }
@@ -421,8 +420,6 @@ class WorkoutSessionActivity : AppCompatActivity() {
     }
 
     private fun startRestTimer(seconds: Int) {
-        android.util.Log.e("WorkoutSession", "Starting rest timer: ${seconds}s")
-
         showRestMode()
 
         val totalMillis = seconds * 1000L
@@ -472,7 +469,6 @@ class WorkoutSessionActivity : AppCompatActivity() {
         workoutSession.isPaused = !workoutSession.isPaused
 
         if (workoutSession.isPaused) {
-            // Change icon to play (you need ic_play.xml)
             restCountDownTimer?.cancel()
             Toast.makeText(this, "Workout paused", Toast.LENGTH_SHORT).show()
         } else {
@@ -514,7 +510,6 @@ class WorkoutSessionActivity : AppCompatActivity() {
 
     private fun finishWorkout() {
         try {
-            android.util.Log.e("WorkoutSession", "==============================================")
             android.util.Log.e("WorkoutSession", "🎉 ========== FINISH WORKOUT START ==========")
 
             workoutTimer?.cancel()
@@ -524,12 +519,28 @@ class WorkoutSessionActivity : AppCompatActivity() {
             workoutSession.endTime = System.currentTimeMillis()
             workoutSession.totalDuration = elapsedSeconds
 
-            android.util.Log.e("WorkoutSession", "Total time: ${elapsedSeconds}s")
-            android.util.Log.e("WorkoutSession", "Total volume: ${workoutSession.totalVolume} kg")
-            android.util.Log.e("WorkoutSession", "Completed exercises: ${workoutSession.completedExercises}/${workoutSession.totalExercises}")
-            android.util.Log.e("WorkoutSession", "Day Index: ${workoutSession.dayIndex}")
+            // ✅ SAVE TO DATABASE
+            lifecycleScope.launch {
+                try {
+                    // Mark workout as completed
+                    repository.updateWorkout(
+                        com.example.assignment3.models.WorkoutEntity(
+                            dayIndex = workoutSession.dayIndex,
+                            workoutType = workoutSession.workoutType,
+                            isCompleted = true
+                        )
+                    )
+                    android.util.Log.e("WorkoutSession", "✅ Workout saved to database")
 
-            // ✅ TẠO INTENT MỚI (QUAN TRỌNG!)
+
+                    // saveWorkoutHistory()
+
+                } catch (e: Exception) {
+                    android.util.Log.e("WorkoutSession", "❌ Error saving to database: ${e.message}")
+                }
+            }
+
+            // CREATE RESULT INTENT
             val resultIntent = Intent()
             resultIntent.putExtra("WORKOUT_COMPLETED", true)
             resultIntent.putExtra("DAY_INDEX", workoutSession.dayIndex)
@@ -538,18 +549,9 @@ class WorkoutSessionActivity : AppCompatActivity() {
             resultIntent.putExtra("COMPLETED_EXERCISES", workoutSession.completedExercises)
             resultIntent.putExtra("TOTAL_EXERCISES", workoutSession.totalExercises)
 
-            android.util.Log.e("WorkoutSession", "✅ Result Intent created:")
-            android.util.Log.e("WorkoutSession", "  WORKOUT_COMPLETED: true")
-            android.util.Log.e("WorkoutSession", "  DAY_INDEX: ${workoutSession.dayIndex}")
-            android.util.Log.e("WorkoutSession", "  TOTAL_VOLUME: ${workoutSession.totalVolume}")
-
             setResult(RESULT_OK, resultIntent)
-            android.util.Log.e("WorkoutSession", "✅ setResult(RESULT_OK) called")
 
             Toast.makeText(this, "🎉 Workout completed! Great job! 💪", Toast.LENGTH_LONG).show()
-
-            android.util.Log.e("WorkoutSession", "✅ About to finish()")
-            android.util.Log.e("WorkoutSession", "==============================================")
 
             finish()
 
@@ -557,7 +559,6 @@ class WorkoutSessionActivity : AppCompatActivity() {
             android.util.Log.e("WorkoutSession", "❌ ERROR in finishWorkout(): ${e.message}")
             e.printStackTrace()
 
-            // Vẫn cố gắng trả result
             try {
                 val resultIntent = Intent()
                 resultIntent.putExtra("WORKOUT_COMPLETED", true)
@@ -569,5 +570,11 @@ class WorkoutSessionActivity : AppCompatActivity() {
 
             finish()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        workoutTimer?.cancel()
+        restCountDownTimer?.cancel()
     }
 }

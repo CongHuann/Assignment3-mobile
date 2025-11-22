@@ -4,9 +4,11 @@ import com.example.assignment3.models.Exercise
 
 object ExerciseDatabase {
 
+    private const val BASE_URL = "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises"
+
     fun getAllExercises(): List<Exercise> = listOf(
 
-        // ==================== CHEST (5 exercises) ====================
+        // CHEST
         Exercise(
             id = 1,
             name = "Bench Press",
@@ -30,7 +32,8 @@ object ExerciseDatabase {
             ),
             difficulty = "Intermediate",
             equipment = "Barbell, Bench",
-            secondaryMuscles = listOf("Anterior Deltoids", "Triceps")
+            secondaryMuscles = listOf("Anterior Deltoids", "Triceps"),
+            imageUrl = "ex_bench_press"
         ),
 
         Exercise(
@@ -56,7 +59,8 @@ object ExerciseDatabase {
             ),
             difficulty = "Intermediate",
             equipment = "Barbell, Incline Bench",
-            secondaryMuscles = listOf("Anterior Deltoids", "Triceps")
+            secondaryMuscles = listOf("Anterior Deltoids", "Triceps"),
+            imageUrl = "ex_incline_bench"
         ),
 
         Exercise(
@@ -82,7 +86,8 @@ object ExerciseDatabase {
             ),
             difficulty = "Beginner",
             equipment = "Dumbbells, Bench",
-            secondaryMuscles = listOf("Anterior Deltoids")
+            secondaryMuscles = listOf("Anterior Deltoids"),
+            imageUrl = "ex_dumbell_flyes"
         ),
 
         Exercise(
@@ -108,7 +113,8 @@ object ExerciseDatabase {
             ),
             difficulty = "Beginner",
             equipment = "Bodyweight",
-            secondaryMuscles = listOf("Shoulders", "Triceps", "Core")
+            secondaryMuscles = listOf("Shoulders", "Triceps", "Core"),
+            imageUrl = "ex_pull_ups"
         ),
 
         Exercise(
@@ -134,10 +140,11 @@ object ExerciseDatabase {
             ),
             difficulty = "Intermediate",
             equipment = "Cable Machine",
-            secondaryMuscles = listOf("Anterior Deltoids")
+            secondaryMuscles = listOf("Anterior Deltoids"),
+            imageUrl = "ex_cable_crossover"
         ),
 
-        // ==================== BACK (5 exercises) ====================
+        // BACK
         Exercise(
             id = 6,
             name = "Deadlift",
@@ -162,7 +169,8 @@ object ExerciseDatabase {
             ),
             difficulty = "Advanced",
             equipment = "Barbell",
-            secondaryMuscles = listOf("Glutes", "Hamstrings", "Traps", "Forearms")
+            secondaryMuscles = listOf("Glutes", "Hamstrings", "Traps", "Forearms"),
+            imageUrl = "ex_deadlift"
         ),
 
         Exercise(
@@ -188,7 +196,8 @@ object ExerciseDatabase {
             ),
             difficulty = "Advanced",
             equipment = "Pull-up Bar",
-            secondaryMuscles = listOf("Biceps", "Rear Deltoids")
+            secondaryMuscles = listOf("Biceps", "Rear Deltoids"),
+            imageUrl = "ex_pull_ups"
         ),
 
         Exercise(
@@ -214,7 +223,8 @@ object ExerciseDatabase {
             ),
             difficulty = "Intermediate",
             equipment = "Barbell",
-            secondaryMuscles = listOf("Biceps", "Rear Deltoids", "Traps")
+            secondaryMuscles = listOf("Biceps", "Rear Deltoids", "Traps"),
+            imageUrl = "ex_barbell_row"
         ),
 
         Exercise(
@@ -240,7 +250,8 @@ object ExerciseDatabase {
             ),
             difficulty = "Beginner",
             equipment = "Lat Pulldown Machine",
-            secondaryMuscles = listOf("Biceps", "Rear Deltoids")
+            secondaryMuscles = listOf("Biceps", "Rear Deltoids"),
+            imageUrl = "ex_lat_pulldown"
         ),
 
         Exercise(
@@ -266,10 +277,11 @@ object ExerciseDatabase {
             ),
             difficulty = "Beginner",
             equipment = "Cable Machine",
-            secondaryMuscles = listOf("Biceps", "Rear Deltoids")
+            secondaryMuscles = listOf("Biceps", "Rear Deltoids"),
+            imageUrl = "ex_cable_row"
         ),
 
-        // ==================== LEGS (6 exercises) ====================
+        // LEGS
         Exercise(
             id = 11,
             name = "Squat",
@@ -294,7 +306,8 @@ object ExerciseDatabase {
             ),
             difficulty = "Intermediate",
             equipment = "Barbell, Squat Rack",
-            secondaryMuscles = listOf("Glutes", "Hamstrings", "Core")
+            secondaryMuscles = listOf("Glutes", "Hamstrings", "Core"),
+            imageUrl = "ex_squat"
         ),
 
         Exercise(
@@ -320,7 +333,8 @@ object ExerciseDatabase {
             ),
             difficulty = "Beginner",
             equipment = "Leg Press Machine",
-            secondaryMuscles = listOf("Glutes", "Hamstrings")
+            secondaryMuscles = listOf("Glutes", "Hamstrings"),
+            imageUrl = "ex_leg_press"
         ),
 
         Exercise(
@@ -346,7 +360,8 @@ object ExerciseDatabase {
             ),
             difficulty = "Intermediate",
             equipment = "Barbell",
-            secondaryMuscles = listOf("Glutes", "Lower Back")
+            secondaryMuscles = listOf("Glutes", "Lower Back"),
+            imageUrl = "ex_romanian_deadlift"
         ),
 
         Exercise(
@@ -372,7 +387,8 @@ object ExerciseDatabase {
             ),
             difficulty = "Beginner",
             equipment = "Leg Curl Machine",
-            secondaryMuscles = listOf("Calves")
+            secondaryMuscles = listOf("Calves"),
+            imageUrl = "ex_leg_curl"
         ),
 
         Exercise(
@@ -398,7 +414,8 @@ object ExerciseDatabase {
             ),
             difficulty = "Beginner",
             equipment = "Leg Extension Machine",
-            secondaryMuscles = listOf()
+            secondaryMuscles = listOf(),
+            imageUrl = "ex_leg_extension"
         ),
 
         Exercise(
@@ -424,10 +441,11 @@ object ExerciseDatabase {
             ),
             difficulty = "Beginner",
             equipment = "Calf Raise Machine or Platform",
-            secondaryMuscles = listOf()
+            secondaryMuscles = listOf(),
+            imageUrl = "ex_calf_raises"
         ),
 
-        // ==================== ARMS (4 exercises) ====================
+        // ARMS
         Exercise(
             id = 17,
             name = "Barbell Curl",
@@ -451,7 +469,8 @@ object ExerciseDatabase {
             ),
             difficulty = "Beginner",
             equipment = "Barbell",
-            secondaryMuscles = listOf("Forearms")
+            secondaryMuscles = listOf("Forearms"),
+            imageUrl = "$BASE_URL/barbell_curl/0.jpg"
         ),
 
         Exercise(
@@ -477,7 +496,8 @@ object ExerciseDatabase {
             ),
             difficulty = "Beginner",
             equipment = "Dumbbells",
-            secondaryMuscles = listOf("Brachialis", "Forearms")
+            secondaryMuscles = listOf("Brachialis", "Forearms"),
+            imageUrl = "$BASE_URL/hammer_curl/0.jpg"
         ),
 
         Exercise(
@@ -502,7 +522,8 @@ object ExerciseDatabase {
             ),
             difficulty = "Intermediate",
             equipment = "Dip Bars",
-            secondaryMuscles = listOf("Chest", "Shoulders")
+            secondaryMuscles = listOf("Chest", "Shoulders"),
+            imageUrl = "$BASE_URL/dips/0.jpg"
         ),
 
         Exercise(
@@ -528,10 +549,11 @@ object ExerciseDatabase {
             ),
             difficulty = "Intermediate",
             equipment = "Barbell or EZ Bar, Bench",
-            secondaryMuscles = listOf()
+            secondaryMuscles = listOf(),
+            imageUrl = "$BASE_URL/lying_tricep_extension/0.jpg"
         ),
 
-        // ==================== SHOULDERS (4 exercises) ====================
+        // SHOULDERS
         Exercise(
             id = 21,
             name = "Overhead Press",
@@ -556,7 +578,8 @@ object ExerciseDatabase {
             ),
             difficulty = "Intermediate",
             equipment = "Barbell",
-            secondaryMuscles = listOf("Triceps", "Upper Chest", "Core")
+            secondaryMuscles = listOf("Triceps", "Upper Chest", "Core"),
+            imageUrl = ""
         ),
 
         Exercise(
@@ -582,7 +605,8 @@ object ExerciseDatabase {
             ),
             difficulty = "Beginner",
             equipment = "Dumbbells",
-            secondaryMuscles = listOf("Traps")
+            secondaryMuscles = listOf("Traps"),
+            imageUrl = "$BASE_URL/dumbbell_lateral_raise/0.jpg"
         ),
 
         Exercise(
@@ -608,7 +632,8 @@ object ExerciseDatabase {
             ),
             difficulty = "Beginner",
             equipment = "Dumbbells",
-            secondaryMuscles = listOf("Upper Chest")
+            secondaryMuscles = listOf("Upper Chest"),
+            imageUrl = "$BASE_URL/dumbbell_front_raise/0.jpg"
         ),
 
         Exercise(
@@ -634,10 +659,11 @@ object ExerciseDatabase {
             ),
             difficulty = "Beginner",
             equipment = "Dumbbells",
-            secondaryMuscles = listOf("Upper Back", "Traps")
+            secondaryMuscles = listOf("Upper Back", "Traps"),
+            imageUrl = "$BASE_URL/rear_delt_fly/0.jpg"
         ),
 
-        // ==================== CORE (4 exercises) ====================
+        // CORE
         Exercise(
             id = 25,
             name = "Plank",
@@ -661,7 +687,8 @@ object ExerciseDatabase {
             ),
             difficulty = "Beginner",
             equipment = "Bodyweight",
-            secondaryMuscles = listOf("Shoulders", "Glutes")
+            secondaryMuscles = listOf("Shoulders", "Glutes"),
+            imageUrl = "$BASE_URL/plank/0.jpg"
         ),
 
         Exercise(
@@ -687,7 +714,8 @@ object ExerciseDatabase {
             ),
             difficulty = "Beginner",
             equipment = "Bodyweight",
-            secondaryMuscles = listOf()
+            secondaryMuscles = listOf(),
+            imageUrl = "$BASE_URL/crunch/0.jpg"
         ),
 
         Exercise(
@@ -713,7 +741,8 @@ object ExerciseDatabase {
             ),
             difficulty = "Intermediate",
             equipment = "Medicine Ball or Weight Plate",
-            secondaryMuscles = listOf("Hip Flexors")
+            secondaryMuscles = listOf("Hip Flexors"),
+            imageUrl = "$BASE_URL/russian_twist/0.jpg"
         ),
 
         Exercise(
@@ -739,7 +768,8 @@ object ExerciseDatabase {
             ),
             difficulty = "Intermediate",
             equipment = "Bodyweight",
-            secondaryMuscles = listOf("Hip Flexors")
+            secondaryMuscles = listOf("Hip Flexors"),
+            imageUrl = "$BASE_URL/leg_raise/0.jpg"
         )
     )
 

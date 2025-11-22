@@ -2,7 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -12,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Assignment3">
 
-        <!-- MainActivity - Màn hình chính (Home) -->
+        <!-- MainActivity  -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -24,24 +28,39 @@
             </intent-filter>
         </activity>
 
-        <!-- WorkoutPlannerActivity - Màn hình Weekly Planner -->
+        <!-- WorkoutPlannerActivity -->
         <activity
             android:name=".WorkoutPlannerActivity"
             android:exported="false"
             android:theme="@style/Theme.Assignment3" />
 
-        <!-- WorkoutDetailActivity - Màn hình Exercise Detail (tạo sau) -->
+        <!-- WorkoutDetailActivity -->
         <activity
             android:name=".ExercisesActivity"
             android:exported="false"
             android:theme="@style/Theme.Assignment3" />
 
+        <!-- WorkoutSessionActivity -->
         <activity
             android:name=".WorkoutSessionActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Assignment3" />
 
+
+        <!-- ExerciseLibraryActivity -->
+        <activity
+            android:name=".ExerciseLibraryActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Assignment3" />
+
+        <!-- ExerciseDetailActivity -->
+        <activity
+            android:name=".ExerciseDetailActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Assignment3" />
     </application>
 
 </manifest>
