@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
@@ -11,25 +12,25 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.assignment3.models.Exercise
-import com.example.assignment3.models.WorkoutEntity
-import com.example.assignment3.repository.WorkoutRepository
+import com.example.assignment3.models.FirebaseWorkout
+import com.example.assignment3.repository.FirebaseRepository
 import kotlinx.coroutines.launch
 
 class WorkoutPlannerActivity : AppCompatActivity() {
 
+    // Firebase repository for data operations
+    private lateinit var repository: FirebaseRepository
 
-    private lateinit var repository: WorkoutRepository
-
-    //  ActivityResultLauncher for Workout Session
+    /**
+     * Activity Result Launcher for Workout Session
+     */
     private val workoutSessionLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        android.util.Log.e("WorkoutPlanner", "🔵 ========== Workout Session Result ==========")
-        android.util.Log.e("WorkoutPlanner", "resultCode: ${result.resultCode} (expected: $RESULT_OK = $RESULT_OK)")
-
         if (result.resultCode == RESULT_OK && result.data != null) {
             val data = result.data!!
 
+            // Extract workout completion data
             val isCompleted = data.getBooleanExtra("WORKOUT_COMPLETED", false)
             val dayIndex = data.getIntExtra("DAY_INDEX", -1)
             val totalVolume = data.getDoubleExtra("TOTAL_VOLUME", 0.0)
@@ -37,86 +38,77 @@ class WorkoutPlannerActivity : AppCompatActivity() {
             val completedExercises = data.getIntExtra("COMPLETED_EXERCISES", 0)
             val totalExercises = data.getIntExtra("TOTAL_EXERCISES", 0)
 
-            android.util.Log.e("WorkoutPlanner", "  isCompleted: $isCompleted")
-            android.util.Log.e("WorkoutPlanner", "  dayIndex: $dayIndex")
-            android.util.Log.e("WorkoutPlanner", "  totalVolume: $totalVolume kg")
-            android.util.Log.e("WorkoutPlanner", "  totalDuration: ${totalDuration}s")
-            android.util.Log.e("WorkoutPlanner", "  completedExercises: $completedExercises/$totalExercises")
-
             if (isCompleted && dayIndex >= 0) {
-                android.util.Log.e("WorkoutPlanner", "✅ Marking day $dayIndex as completed")
-
                 val workout = workoutData[dayIndex]
-                android.util.Log.e("WorkoutPlanner", "  Before: $workout")
 
                 if (workout != null) {
-                    //  MARK AS COMPLETED
+                    // Mark day as completed
                     workoutData[dayIndex] = WorkoutDay(workout.workoutType, true)
 
-                    //  SAVE TO DATABASE
-                    saveWorkoutToDatabase(dayIndex)
+                    // ✅ SAVE SYNC với await
+                    lifecycleScope.launch {
+                        try {
+                            repository.updateWorkout(
+                                dayIndex = dayIndex,
+                                workoutType = workout.workoutType,
+                                isCompleted = true
+                            )
+                            // Update UI sau save thành công
+                            updateWeekdaysUI()
+                            if (dayIndex == selectedDayIndex) {
+                                loadWorkoutForDay(dayIndex)
+                            }
 
-                    android.util.Log.e("WorkoutPlanner", "  After: ${workoutData[dayIndex]}")
+                            // Show success message with statistics
+                            val minutes = totalDuration / 60
+                            val seconds = totalDuration % 60
+                            val message = """
+                            Workout Completed!
+                            
+                            Time: ${minutes}m ${seconds}s
+                            Volume: ${String.format("%.1f", totalVolume)} kg
+                            Exercises: $completedExercises/$totalExercises
+                        """.trimIndent()
 
-                    // UPDATE UI
-                    updateWeekdaysUI()
+                            Toast.makeText(this@WorkoutPlannerActivity, message, Toast.LENGTH_LONG).show()
 
-                    if (dayIndex == selectedDayIndex) {
-                        loadWorkoutForDay(dayIndex)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            Toast.makeText(this@WorkoutPlannerActivity, "Save failed: ${e.message}", Toast.LENGTH_LONG).show()
+                        }
                     }
-
-                    // SHOW SUCCESS MESSAGE
-                    val minutes = totalDuration / 60
-                    val seconds = totalDuration % 60
-                    val message = """
-                        Workout Completed!
-                        
-                        Time: ${minutes}m ${seconds}s
-                        Volume: ${String.format("%.1f", totalVolume)} kg
-                        Exercises: $completedExercises/$totalExercises
-                    """.trimIndent()
-
-                    Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-
-                } else {
-                    android.util.Log.e("WorkoutPlanner", "❌ workout is NULL!")
                 }
-            } else {
-                android.util.Log.e("WorkoutPlanner", "❌ Conditions not met (isCompleted=$isCompleted, dayIndex=$dayIndex)")
             }
-        } else {
-            android.util.Log.e("WorkoutPlanner", "❌ Result not OK or data is null")
         }
-
-        android.util.Log.e("WorkoutPlanner", "========================================")
     }
 
-    // ActivityResultLauncher for Add Exercise
+    /**
+     * Activity Result Launcher for Adding Exercises
+     */
     private val addExerciseLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        android.util.Log.e("WorkoutPlanner", "🔵 ========== Add Exercise Result ==========")
-
         if (result.resultCode == RESULT_OK && result.data != null) {
             val data = result.data!!
 
+            // Extract exercise data from arrays
             val ids = data.getIntArrayExtra("EXERCISE_IDS")
             val names = data.getStringArrayExtra("EXERCISE_NAMES")
             val setsArray = data.getIntArrayExtra("EXERCISE_SETS")
             val repsArray = data.getStringArrayExtra("EXERCISE_REPS")
             val musclesArray = data.getStringArrayExtra("EXERCISE_MUSCLES")
 
+            // Validate all data is present
             if (ids == null || names == null || setsArray == null || repsArray == null || musclesArray == null) {
-                android.util.Log.e("WorkoutPlanner", "❌ One or more arrays is NULL!")
                 return@registerForActivityResult
             }
 
-            android.util.Log.e("WorkoutPlanner", "Received ${ids.size} exercises")
-
+            // Initialize exercise list for day if needed
             if (exercisesMap[selectedDayIndex] == null) {
                 exercisesMap[selectedDayIndex] = mutableListOf()
             }
 
+            // Add each selected exercise
             for (i in ids.indices) {
                 val newExercise = Exercise(
                     id = ids[i],
@@ -125,36 +117,39 @@ class WorkoutPlannerActivity : AppCompatActivity() {
                     reps = repsArray[i],
                     targetMuscle = musclesArray[i]
                 )
-
-                android.util.Log.e("WorkoutPlanner", "  Adding: ${newExercise.name}")
                 exercisesMap[selectedDayIndex]?.add(newExercise)
             }
 
-            //  SAVE TO DATABASE
+            //Firebase
             lifecycleScope.launch {
                 try {
                     for (i in ids.indices) {
                         repository.addExerciseToDay(selectedDayIndex, ids[i])
                     }
-                    android.util.Log.e("WorkoutPlanner", "✅ Saved ${ids.size} exercises to DB")
+
+                    // ✅ WAIT FOR FIREBASE TO COMPLETE
+                    kotlinx.coroutines.delay(300)
+
+                    // ✅ RELOAD FROM FIREBASE TO VERIFY
+                    val exercises = repository.getExercisesForDay(selectedDayIndex)
+                    exercisesMap[selectedDayIndex] = exercises.toMutableList()
                 } catch (e: Exception) {
-                    android.util.Log.e("WorkoutPlanner", "❌ Error saving exercises: ${e.message}")
+                    e.printStackTrace()
                 }
             }
 
+            // Refresh UI
             loadExercisesForDay(selectedDayIndex)
 
+            // Show confirmation message
             val count = ids.size
             val message = if (count == 1) "1 exercise added" else "$count exercises added"
             Toast.makeText(this, "$message to ${weekdays[selectedDayIndex]}", Toast.LENGTH_SHORT).show()
-        } else {
-            android.util.Log.e("WorkoutPlanner", "❌ Result not OK or data is null")
         }
-
-        android.util.Log.e("WorkoutPlanner", "========================================")
     }
 
-    // Views
+    // ==================== UI COMPONENTS ====================
+
     private lateinit var btnBack: ImageButton
     private lateinit var tvPlannerTitle: TextView
     private lateinit var llWeekdays: LinearLayout
@@ -164,11 +159,18 @@ class WorkoutPlannerActivity : AppCompatActivity() {
     private lateinit var btnStartWorkout: Button
     private lateinit var llExerciseList: LinearLayout
 
+    // ==================== DATA ====================
+
+    // Day names for UI display
     private val weekdays = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+
+    // Currently selected day (0=Mon, 6=Sun)
     private var selectedDayIndex = 0
 
+    // Available workout types
     private val workoutTypes = listOf("Push", "Pull", "Legs", "Chest", "Back", "Arm", "Rest")
 
+    // Workout focus descriptions for each type
     private val workoutFocus = mapOf(
         "Push" to "Focus: Chest, Shoulders, Triceps",
         "Pull" to "Focus: Back, Biceps",
@@ -179,7 +181,7 @@ class WorkoutPlannerActivity : AppCompatActivity() {
         "Rest" to "Recovery day"
     )
 
-    // DATA (in-memory cache)
+    // In-memory cache of workout data for 7 days
     private val workoutData = mutableMapOf(
         0 to WorkoutDay("", false),
         1 to WorkoutDay("", false),
@@ -190,6 +192,8 @@ class WorkoutPlannerActivity : AppCompatActivity() {
         6 to WorkoutDay("", false)
     )
 
+    // In-memory cache of exercises for each day
+    // Key: day index (0-6), Value: list of exercises
     private val exercisesMap = mutableMapOf<Int, MutableList<Exercise>>(
         0 to mutableListOf(),
         1 to mutableListOf(),
@@ -200,30 +204,37 @@ class WorkoutPlannerActivity : AppCompatActivity() {
         6 to mutableListOf()
     )
 
+    // ==================== LIFECYCLE ====================
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_workout)
         supportActionBar?.hide()
 
-        android.util.Log.e("WorkoutPlanner", "🟢 ========== onCreate started ==========")
-
-        //  GET REPOSITORY
+        // Initialize Firebase repository
         repository = (application as MyApplication).repository
 
+        // Setup UI components
         initViews()
         setupClickListeners()
         setupWeekdaysSelector()
 
-        //  LOAD DATA FROM DATABASE
+        // Load workout data from Firebase
         loadWorkoutsFromDatabase()
     }
+
+    // ==================== DATA OPERATIONS ====================
+
+    /**
+     * Load workout data from Firebase Firestore
+     */
 
     private fun loadWorkoutsFromDatabase() {
         lifecycleScope.launch {
             try {
-
-                // Load workouts
+                // Load workout metadata (type, completion) for all days
                 val workouts = repository.getAllWorkouts()
+                Log.d("WorkoutPlanner", "Loaded workouts count: ${workouts.size}, data: $workouts")  // Check ở Logcat
                 workouts.forEach { workout ->
                     workoutData[workout.dayIndex] = WorkoutDay(
                         workoutType = workout.workoutType,
@@ -237,39 +248,47 @@ class WorkoutPlannerActivity : AppCompatActivity() {
                     exercisesMap[i] = exercises.toMutableList()
                 }
 
-
+                // Update UI with loaded data
                 updateWeekdaysUI()
                 loadWorkoutForDay(0)
 
             } catch (e: Exception) {
-                android.util.Log.e("WorkoutPlanner", "❌ Error loading: ${e.message}")
+                Log.e("WorkoutPlanner", "Load failed", e)
                 e.printStackTrace()
 
-                // Fallback: use default empty data
+                // On error, use default empty data and update UI
                 updateWeekdaysUI()
                 loadWorkoutForDay(0)
             }
         }
     }
 
+    /**
+     * Save workout metadata to Firebase
+     * Saves workout type and completion status
+     */
     private fun saveWorkoutToDatabase(dayIndex: Int) {
         lifecycleScope.launch {
             try {
                 val workout = workoutData[dayIndex]
                 if (workout != null) {
                     repository.updateWorkout(
-                        WorkoutEntity(
-                            dayIndex = dayIndex,
-                            workoutType = workout.workoutType,
-                            isCompleted = workout.isCompleted
-                        )
+                        dayIndex = dayIndex,
+                        workoutType = workout.workoutType,
+                        isCompleted = workout.isCompleted
                     )
                 }
             } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
     }
 
+    // ==================== UI SETUP ====================
+
+    /**
+     * Initialize all UI components
+     */
     private fun initViews() {
         btnBack = findViewById(R.id.btnBack)
         tvPlannerTitle = findViewById(R.id.tvPlannerTitle)
@@ -281,54 +300,61 @@ class WorkoutPlannerActivity : AppCompatActivity() {
         llExerciseList = findViewById(R.id.llExerciseList)
     }
 
+    /**
+     * Setup click listeners for buttons
+     */
     private fun setupClickListeners() {
+        // Back button - return to home
         btnBack.setOnClickListener {
             finish()
         }
 
+        // Day title - click to change workout type
         tvDayTitle.setOnClickListener {
             showWorkoutTypeDialog()
         }
 
+        // Add Exercise button - open exercise library
         btnAddExercise.setOnClickListener {
-
             val intent = Intent(this, ExercisesActivity::class.java)
             intent.putExtra("SELECTION_MODE", true)
-            intent.putExtra("DAY_INDEX", selectedDayIndex)  // PASS DAY_INDEX
+            intent.putExtra("DAY_INDEX", selectedDayIndex)
             addExerciseLauncher.launch(intent)
         }
 
+        // Start Workout button
         btnStartWorkout.setOnClickListener {
-
             val selectedDay = workoutData[selectedDayIndex]
 
+            //Check workout type is set
             if (selectedDay?.workoutType.isNullOrEmpty()) {
-                android.util.Log.e("WorkoutPlanner", "❌ No workout type selected")
                 Toast.makeText(this, "Please select workout type first", Toast.LENGTH_SHORT).show()
                 showWorkoutTypeDialog()
                 return@setOnClickListener
             }
 
+            //Cannot start rest day
             if (selectedDay?.workoutType == "Rest") {
-                android.util.Log.e("WorkoutPlanner", "❌ Rest day")
                 Toast.makeText(this, "This is a rest day!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
+            //Check exercises exist
             val exercises = exercisesMap[selectedDayIndex]
             if (exercises.isNullOrEmpty()) {
-                android.util.Log.e("WorkoutPlanner", "❌ No exercises")
                 Toast.makeText(this, "Please add exercises first", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            android.util.Log.e("WorkoutPlanner", "✅ All checks passed, launching WorkoutSessionActivity")
-
+            //Qualified -> Start workout session
             val intent = Intent(this, WorkoutSessionActivity::class.java)
+
+            // Pass workout metadata
             intent.putExtra("DAY_INDEX", selectedDayIndex)
             intent.putExtra("DAY_NAME", weekdays[selectedDayIndex])
             intent.putExtra("WORKOUT_TYPE", selectedDay.workoutType)
 
+            // Pass exercise data as arrays
             val ids = exercises.map { it.id }.toIntArray()
             val names = exercises.map { it.name }.toTypedArray()
             val setsArray = exercises.map { it.sets }.toIntArray()
@@ -346,26 +372,34 @@ class WorkoutPlannerActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Setup weekday selector (7-day bar at top)
+     */
     private fun setupWeekdaysSelector() {
         for (i in 0 until llWeekdays.childCount) {
             val dayLayout = llWeekdays.getChildAt(i) as LinearLayout
 
+            // Click: select day
             dayLayout.setOnClickListener {
                 selectedDayIndex = i
                 updateWeekdaysUI()
                 loadWorkoutForDay(i)
             }
 
+            // Hold: edit day
             dayLayout.setOnLongClickListener {
                 showEditDayDialog(i)
                 true
             }
         }
+
         updateWeekdaysUI()
     }
 
+    /**
+     * Update weekday selector UI based on current state
+     */
     private fun updateWeekdaysUI() {
-
         for (i in 0 until llWeekdays.childCount) {
             val dayLayout = llWeekdays.getChildAt(i) as LinearLayout
             val circleView = dayLayout.getChildAt(0) as View
@@ -375,6 +409,7 @@ class WorkoutPlannerActivity : AppCompatActivity() {
             val workout = workoutData[i]
 
             when {
+                //Day is completed
                 workout?.isCompleted == true -> {
                     circleView.background = ContextCompat.getDrawable(this, R.drawable.bg_green)
                     iconView.setImageResource(R.drawable.check)
@@ -382,6 +417,7 @@ class WorkoutPlannerActivity : AppCompatActivity() {
                     textView.setTextColor(Color.WHITE)
                 }
 
+                //Day is currently selected
                 i == selectedDayIndex -> {
                     circleView.background = ContextCompat.getDrawable(this, R.drawable.bg_square_light)
                     when (workout?.workoutType) {
@@ -392,6 +428,7 @@ class WorkoutPlannerActivity : AppCompatActivity() {
                     textView.setTextColor(Color.WHITE)
                 }
 
+                //Day is rest day
                 workout?.workoutType == "Rest" -> {
                     circleView.background = ContextCompat.getDrawable(this, R.drawable.bg_circle_gray)
                     iconView.setImageResource(R.drawable.rest)
@@ -399,6 +436,7 @@ class WorkoutPlannerActivity : AppCompatActivity() {
                     textView.setTextColor(Color.GRAY)
                 }
 
+                //Default state
                 else -> {
                     circleView.background = ContextCompat.getDrawable(this, R.drawable.bg_circle_gray)
                     iconView.setImageResource(R.drawable.dumbbell)
@@ -409,10 +447,14 @@ class WorkoutPlannerActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Load and display workout details for specific day
+     */
     private fun loadWorkoutForDay(dayIndex: Int) {
         val workout = workoutData[dayIndex]
         val dayName = weekdays[dayIndex]
 
+        // Update title and focus text
         if (workout?.workoutType.isNullOrEmpty()) {
             tvDayTitle.text = "$dayName - Day"
             tvDayFocus.text = "Tap title to select workout type"
@@ -424,14 +466,19 @@ class WorkoutPlannerActivity : AppCompatActivity() {
         loadExercisesForDay(dayIndex)
     }
 
+    /**
+     * Load and display exercise list for specific day
+     */
     private fun loadExercisesForDay(dayIndex: Int) {
         llExerciseList.removeAllViews()
 
         val exercises = exercisesMap[dayIndex] ?: mutableListOf()
 
         for ((index, exercise) in exercises.withIndex()) {
+            // Inflate exercise item layout
             val exerciseView = layoutInflater.inflate(R.layout.item_exercise, llExerciseList, false)
 
+            // Setup exercise details
             val tvExerciseName = exerciseView.findViewById<TextView>(R.id.tvExerciseName)
             val tvExerciseDetails = exerciseView.findViewById<TextView>(R.id.tvExerciseDetails)
             val btnDelete = exerciseView.findViewById<ImageButton>(R.id.btnDelete)
@@ -439,6 +486,7 @@ class WorkoutPlannerActivity : AppCompatActivity() {
             tvExerciseName.text = exercise.name
             tvExerciseDetails.text = "${exercise.sets} × ${exercise.reps} • ${exercise.targetMuscle}"
 
+            // Delete button handler
             btnDelete.setOnClickListener {
                 showDeleteConfirmDialog(exercise, dayIndex, index)
             }
@@ -447,6 +495,11 @@ class WorkoutPlannerActivity : AppCompatActivity() {
         }
     }
 
+    // ==================== DIALOGS ====================
+
+    /**
+     * Show edit options for a day (long-click menu)
+     */
     private fun showEditDayDialog(dayIndex: Int) {
         val workout = workoutData[dayIndex] ?: return
         val dayName = weekdays[dayIndex]
@@ -470,6 +523,9 @@ class WorkoutPlannerActivity : AppCompatActivity() {
         builder.show()
     }
 
+    /**
+     * Show workout type selection dialog
+     */
     private fun showWorkoutTypeDialogForDay(dayIndex: Int) {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Select Workout Type for ${weekdays[dayIndex]}")
@@ -478,54 +534,68 @@ class WorkoutPlannerActivity : AppCompatActivity() {
             val selectedType = workoutTypes[which]
             val currentCompleted = workoutData[dayIndex]?.isCompleted ?: false
 
+            // Update workout type (preserve completion status)
             workoutData[dayIndex] = WorkoutDay(selectedType, currentCompleted)
 
-            // ✅ SAVE TO DATABASE
+            //Firebase
             saveWorkoutToDatabase(dayIndex)
 
+            // Update UI
             if (dayIndex == selectedDayIndex) {
                 loadWorkoutForDay(dayIndex)
             }
-
             updateWeekdaysUI()
-
         }
 
         builder.show()
     }
 
+    /**
+     * Toggle day completion status
+     */
     private fun toggleDayCompletion(dayIndex: Int) {
         val workout = workoutData[dayIndex] ?: return
 
+        // Toggle completion status
         val newCompleted = !workout.isCompleted
         workoutData[dayIndex] = WorkoutDay(workout.workoutType, newCompleted)
 
-        // ✅ SAVE TO DATABASE
+        //Firebase
         saveWorkoutToDatabase(dayIndex)
 
+        // Update UI
         updateWeekdaysUI()
 
+        // Show confirmation
         val status = if (newCompleted) "completed ✅" else "not completed"
         Toast.makeText(this, "${weekdays[dayIndex]} marked as $status", Toast.LENGTH_SHORT).show()
     }
 
+    /**
+     * Show workout type dialog for currently selected day
+     */
     private fun showWorkoutTypeDialog() {
         showWorkoutTypeDialogForDay(selectedDayIndex)
     }
 
+    /**
+     * Show confirmation dialog before deleting exercise
+     */
     private fun showDeleteConfirmDialog(exercise: Exercise, dayIndex: Int, exerciseIndex: Int) {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Delete Exercise")
         builder.setMessage("Are you sure you want to delete ${exercise.name}?")
 
         builder.setPositiveButton("Delete") { dialog, _ ->
+            // Remove from memory
             exercisesMap[dayIndex]?.removeAt(exerciseIndex)
 
-            // ✅ DELETE FROM DATABASE
+            // Delete from Firebase
             lifecycleScope.launch {
                 repository.removeExerciseFromDay(dayIndex, exercise.id)
             }
 
+            // Update UI
             loadExercisesForDay(dayIndex)
             Toast.makeText(this, "${exercise.name} deleted", Toast.LENGTH_SHORT).show()
             dialog.dismiss()
@@ -538,6 +608,11 @@ class WorkoutPlannerActivity : AppCompatActivity() {
         builder.show()
     }
 
+    // ==================== DATA MODELS ====================
+
+    /**
+     * Data class representing a workout day
+     */
     data class WorkoutDay(
         val workoutType: String,
         val isCompleted: Boolean = false

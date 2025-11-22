@@ -149,7 +149,7 @@
                         android:id="@+id/tvExcercises"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/excercises"
+                        android:text="@string/exercises"
                         android:textColor="@android:color/black"
                         android:textSize="22sp"
                         android:fontFamily="@font/opensans" />
@@ -175,60 +175,6 @@
                     android:layout_centerVertical="true"/>
             </RelativeLayout>
         </androidx.cardview.widget.CardView>
-
-        <!-- CARD 3: MEAL PLAN-->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardMealPlan"
-            android:layout_width="match_parent"
-            android:layout_height="96dp"
-            android:layout_marginHorizontal="24dp"
-            android:layout_marginTop="16dp"
-            app:cardCornerRadius="20dp"
-            app:cardBackgroundColor="@color/secondary_gray">
-
-            <!-- Card content layout -->
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="20dp">
-
-                <!--Text content -->
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <!-- Card title-->
-                    <TextView
-                        android:id="@+id/tvMealPlan"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/mealplan"
-                        android:textColor="@android:color/black"
-                        android:textSize="22sp"
-                        android:fontFamily="@font/opensans" />
-
-                    <!-- Card subtitle-->
-                    <TextView
-                        android:id="@+id/tvMealPlanSub"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/track_ur_nu"
-                        android:textColor="@android:color/black"
-                        android:textSize="14sp"
-                        android:fontFamily="@font/opensans"/>
-                </LinearLayout>
-
-                <!-- Food icon -->
-                <ImageView
-                    android:id="@+id/icFoodMealPlan"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:src="@drawable/food"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"/>
-            </RelativeLayout>
-        </androidx.cardview.widget.CardView>
     </LinearLayout>
 
     <!-- QUICK STATS SECTION - Statistics overview   -->
@@ -239,7 +185,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="396dp"
+        android:layout_marginTop="330dp"
         android:fontFamily="@font/opensans"
         android:text="@string/quick_stats"
         android:textColor="@android:color/white"
@@ -352,40 +298,40 @@
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:src="@drawable/clock"
-                        android:layout_marginEnd="8dp" />
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/clock" />
 
                     <!-- This week -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/opensans"
                         android:text="@string/this_week"
                         android:textColor="@android:color/white"
-                        android:textSize="15sp"
-                        android:fontFamily="@font/opensans"/>
+                        android:textSize="15sp" />
                 </LinearLayout>
 
                 <!-- Main value-->
                 <TextView
+                    android:id="@+id/tvWorkTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/tvWorkTime"
-                    android:text="2h"
-                    android:textSize="24sp"
-                    android:textColor="@android:color/white"
-                    android:fontFamily="@font/opensans"
+                    android:layout_marginStart="2dp"
                     android:layout_marginTop="6dp"
-                    android:layout_marginStart="2dp"/>
+                    android:fontFamily="@font/opensans"
+                    android:text="2h"
+                    android:textColor="@android:color/white"
+                    android:textSize="24sp" />
 
                 <!-- Subtitle-->
                 <TextView
                     android:id="@+id/tvWorkoutTimeSub"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/opensans"
                     android:text="@string/workout_time"
                     android:textColor="@android:color/white"
-                    android:textSize="13sp"
-                    android:fontFamily="@font/opensans"/>
+                    android:textSize="13sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 

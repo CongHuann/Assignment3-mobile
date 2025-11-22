@@ -4,11 +4,9 @@ import com.example.assignment3.models.Exercise
 
 object ExerciseDatabase {
 
-    private const val BASE_URL = "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises"
-
     fun getAllExercises(): List<Exercise> = listOf(
 
-        // CHEST
+        // ==================== CHEST (5 exercises) ====================
         Exercise(
             id = 1,
             name = "Bench Press",
@@ -87,7 +85,7 @@ object ExerciseDatabase {
             difficulty = "Beginner",
             equipment = "Dumbbells, Bench",
             secondaryMuscles = listOf("Anterior Deltoids"),
-            imageUrl = "ex_dumbell_flyes"
+            imageUrl = "ex_dumbbell_flyes"
         ),
 
         Exercise(
@@ -114,7 +112,7 @@ object ExerciseDatabase {
             difficulty = "Beginner",
             equipment = "Bodyweight",
             secondaryMuscles = listOf("Shoulders", "Triceps", "Core"),
-            imageUrl = "ex_pull_ups"
+            imageUrl = "ex_push_ups"
         ),
 
         Exercise(
@@ -144,7 +142,7 @@ object ExerciseDatabase {
             imageUrl = "ex_cable_crossover"
         ),
 
-        // BACK
+        // ==================== BACK (5 exercises) ====================
         Exercise(
             id = 6,
             name = "Deadlift",
@@ -197,7 +195,7 @@ object ExerciseDatabase {
             difficulty = "Advanced",
             equipment = "Pull-up Bar",
             secondaryMuscles = listOf("Biceps", "Rear Deltoids"),
-            imageUrl = "ex_pull_ups"
+            imageUrl = "ex_pull_up"
         ),
 
         Exercise(
@@ -281,7 +279,7 @@ object ExerciseDatabase {
             imageUrl = "ex_cable_row"
         ),
 
-        // LEGS
+        // ==================== LEGS (6 exercises) ====================
         Exercise(
             id = 11,
             name = "Squat",
@@ -445,7 +443,7 @@ object ExerciseDatabase {
             imageUrl = "ex_calf_raises"
         ),
 
-        // ARMS
+        // ==================== ARMS (4 exercises) ====================
         Exercise(
             id = 17,
             name = "Barbell Curl",
@@ -470,7 +468,7 @@ object ExerciseDatabase {
             difficulty = "Beginner",
             equipment = "Barbell",
             secondaryMuscles = listOf("Forearms"),
-            imageUrl = "$BASE_URL/barbell_curl/0.jpg"
+            imageUrl = "ex_barbell_curl"
         ),
 
         Exercise(
@@ -497,7 +495,7 @@ object ExerciseDatabase {
             difficulty = "Beginner",
             equipment = "Dumbbells",
             secondaryMuscles = listOf("Brachialis", "Forearms"),
-            imageUrl = "$BASE_URL/hammer_curl/0.jpg"
+            imageUrl = "ex_hammer_curl"
         ),
 
         Exercise(
@@ -523,7 +521,7 @@ object ExerciseDatabase {
             difficulty = "Intermediate",
             equipment = "Dip Bars",
             secondaryMuscles = listOf("Chest", "Shoulders"),
-            imageUrl = "$BASE_URL/dips/0.jpg"
+            imageUrl = "ex_tricep_dips"
         ),
 
         Exercise(
@@ -550,10 +548,10 @@ object ExerciseDatabase {
             difficulty = "Intermediate",
             equipment = "Barbell or EZ Bar, Bench",
             secondaryMuscles = listOf(),
-            imageUrl = "$BASE_URL/lying_tricep_extension/0.jpg"
+            imageUrl = "ex_skull_crushers"
         ),
 
-        // SHOULDERS
+        // ==================== SHOULDERS (4 exercises) ====================
         Exercise(
             id = 21,
             name = "Overhead Press",
@@ -579,7 +577,7 @@ object ExerciseDatabase {
             difficulty = "Intermediate",
             equipment = "Barbell",
             secondaryMuscles = listOf("Triceps", "Upper Chest", "Core"),
-            imageUrl = ""
+            imageUrl = "ex_overhead_press"
         ),
 
         Exercise(
@@ -606,7 +604,7 @@ object ExerciseDatabase {
             difficulty = "Beginner",
             equipment = "Dumbbells",
             secondaryMuscles = listOf("Traps"),
-            imageUrl = "$BASE_URL/dumbbell_lateral_raise/0.jpg"
+            imageUrl = "ex_lateral_raises"
         ),
 
         Exercise(
@@ -633,7 +631,7 @@ object ExerciseDatabase {
             difficulty = "Beginner",
             equipment = "Dumbbells",
             secondaryMuscles = listOf("Upper Chest"),
-            imageUrl = "$BASE_URL/dumbbell_front_raise/0.jpg"
+            imageUrl = "ex_front_raises"
         ),
 
         Exercise(
@@ -660,10 +658,10 @@ object ExerciseDatabase {
             difficulty = "Beginner",
             equipment = "Dumbbells",
             secondaryMuscles = listOf("Upper Back", "Traps"),
-            imageUrl = "$BASE_URL/rear_delt_fly/0.jpg"
+            imageUrl = "ex_rear_delt_flyes"
         ),
 
-        // CORE
+        // ==================== CORE (4 exercises) ====================
         Exercise(
             id = 25,
             name = "Plank",
@@ -688,7 +686,7 @@ object ExerciseDatabase {
             difficulty = "Beginner",
             equipment = "Bodyweight",
             secondaryMuscles = listOf("Shoulders", "Glutes"),
-            imageUrl = "$BASE_URL/plank/0.jpg"
+            imageUrl = "ex_plank"
         ),
 
         Exercise(
@@ -715,7 +713,7 @@ object ExerciseDatabase {
             difficulty = "Beginner",
             equipment = "Bodyweight",
             secondaryMuscles = listOf(),
-            imageUrl = "$BASE_URL/crunch/0.jpg"
+            imageUrl = "ex_crunches"
         ),
 
         Exercise(
@@ -742,7 +740,7 @@ object ExerciseDatabase {
             difficulty = "Intermediate",
             equipment = "Medicine Ball or Weight Plate",
             secondaryMuscles = listOf("Hip Flexors"),
-            imageUrl = "$BASE_URL/russian_twist/0.jpg"
+            imageUrl = "ex_russian_twists"
         ),
 
         Exercise(
@@ -769,7 +767,7 @@ object ExerciseDatabase {
             difficulty = "Intermediate",
             equipment = "Bodyweight",
             secondaryMuscles = listOf("Hip Flexors"),
-            imageUrl = "$BASE_URL/leg_raise/0.jpg"
+            imageUrl = "ex_leg_raises"
         )
     )
 

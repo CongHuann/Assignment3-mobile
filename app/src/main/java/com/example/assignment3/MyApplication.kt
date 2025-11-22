@@ -1,16 +1,19 @@
 package com.example.assignment3
 
 import android.app.Application
-import com.example.assignment3.database.AppDatabase
-import com.example.assignment3.repository.WorkoutRepository
+import androidx.lifecycle.lifecycleScope
+import com.example.assignment3.repository.FirebaseRepository
+import kotlinx.coroutines.launch
 
 class MyApplication : Application() {
 
-    val database by lazy { AppDatabase.getDatabase(this) }
-    val repository by lazy { WorkoutRepository(database) }
+    //FIREBASE REPOSITORY
+    val repository by lazy { FirebaseRepository() }
 
     override fun onCreate() {
         super.onCreate()
-        android.util.Log.e("MyApplication", "🟢 Application started")
+
+        //Initialize Firebase exercises (first time only)
+        // Will be called from MainActivity
     }
 }

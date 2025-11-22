@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.assignment3.adapters.ExerciseAdapter
 import com.example.assignment3.models.Exercise
-import com.example.assignment3.repository.WorkoutRepository
+import com.example.assignment3.repository.FirebaseRepository
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import kotlinx.coroutines.launch
@@ -31,8 +31,8 @@ class ExercisesActivity : AppCompatActivity() {
     private lateinit var tvSelectedCount: TextView
     private lateinit var btnAddSelected: Button
 
-    // ✅ ROOM REPOSITORY
-    private lateinit var repository: WorkoutRepository
+    //Fire base
+    private lateinit var repository: FirebaseRepository
 
     private var allExercises = listOf<Exercise>()
     private var filteredExercises = mutableListOf<Exercise>()
@@ -51,17 +51,15 @@ class ExercisesActivity : AppCompatActivity() {
         setContentView(R.layout.activity_exercises)
         supportActionBar?.hide()
 
-        android.util.Log.e("ExercisesActivity", "🟢 ========== onCreate started ==========")
-
         isSelectionMode = intent.getBooleanExtra("SELECTION_MODE", false)
 
-        // ✅ GET REPOSITORY FROM APPLICATION
+        // GET REPOSITORY FROM APPLICATION
         repository = (application as MyApplication).repository
 
         initViews()
         setupChipGroup()
         setupRecyclerView()
-        loadExercises()  // ✅ LOAD FROM DATABASE
+        loadExercises()  //LOAD FROM DATABASE
     }
 
     private fun initViews() {
@@ -86,17 +84,15 @@ class ExercisesActivity : AppCompatActivity() {
     }
 
     private fun loadExercises() {
-        // ✅ LOAD FROM DATABASE USING COROUTINE
+        //LOAD FROM DATABASE USING COROUTINE
         lifecycleScope.launch {
             try {
                 allExercises = repository.getAllExercises()
-                android.util.Log.e("ExercisesActivity", "✅ Loaded ${allExercises.size} exercises from DB")
 
                 filterExercises("All")
                 updateBottomBar()
 
             } catch (e: Exception) {
-                android.util.Log.e("ExercisesActivity", "❌ Error loading exercises: ${e.message}")
                 e.printStackTrace()
             }
         }
@@ -130,7 +126,7 @@ class ExercisesActivity : AppCompatActivity() {
             filteredExercises,
             selectedExercises,
             { updateBottomBar() },
-            true  // isSelectionMode = true
+            true
         )
 
         rvExercises.layoutManager = LinearLayoutManager(this)
@@ -138,7 +134,6 @@ class ExercisesActivity : AppCompatActivity() {
     }
 
     private fun filterExercises(muscleGroup: String) {
-        android.util.Log.e("ExercisesActivity", "Filtering by: $muscleGroup")
 
         filteredExercises.clear()
 
@@ -147,8 +142,6 @@ class ExercisesActivity : AppCompatActivity() {
         } else {
             filteredExercises.addAll(allExercises.filter { it.targetMuscle == muscleGroup })
         }
-
-        android.util.Log.e("ExercisesActivity", "Filtered: ${filteredExercises.size} exercises")
 
         exerciseAdapter.notifyDataSetChanged()
     }
@@ -169,7 +162,6 @@ class ExercisesActivity : AppCompatActivity() {
 
     // LIST OF SELECTED EXERCISES
     private fun returnSelectedExercises() {
-        android.util.Log.e("ExercisesActivity", "Returning ${selectedExercises.size} selected exercises")
 
         val resultIntent = Intent()
         val selectedList = ArrayList(selectedExercises.toList())
@@ -186,7 +178,6 @@ class ExercisesActivity : AppCompatActivity() {
         resultIntent.putExtra("EXERCISE_REPS", repsArray)
         resultIntent.putExtra("EXERCISE_MUSCLES", musclesArray)
 
-        // ✅ OPTIONAL: Save to database (if called from WorkoutPlannerActivity)
         val dayIndex = intent.getIntExtra("DAY_INDEX", -1)
         if (dayIndex != -1) {
             lifecycleScope.launch {

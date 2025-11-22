@@ -4,16 +4,15 @@ import java.util.UUID
 
 /**
  * WorkoutSession - Represents a complete workout session
- * Tracks all exercises, timing, and progress for one workout
  */
 data class WorkoutSession(
     val id: String = UUID.randomUUID().toString(),
-    val dayIndex: Int,                              // 0=Mon, 1=Tue, etc.
-    val dayName: String,                            // "Monday", "Tuesday", etc.
-    val workoutType: String,                        // "Push", "Pull", "Legs", etc.
+    val dayIndex: Int,
+    val dayName: String,
+    val workoutType: String,
     val startTime: Long = System.currentTimeMillis(),
     var endTime: Long? = null,
-    var totalDuration: Long = 0,                    // Total workout time in seconds
+    var totalDuration: Long = 0,
     val exercises: MutableList<ExerciseSession> = mutableListOf(),
     var isCompleted: Boolean = false,
     var isPaused: Boolean = false
@@ -45,7 +44,6 @@ data class WorkoutSession(
 
 /**
  * ExerciseSession - Tracks progress for one exercise in a workout
- * Contains all sets performed for this exercise
  */
 data class ExerciseSession(
     val exercise: Exercise,
@@ -78,12 +76,11 @@ data class ExerciseSession(
 
 /**
  * SetData - Represents one set of an exercise
- * Example: 50kg × 10 reps = 500kg volume
  */
 data class SetData(
-    val setNumber: Int,                             // 1, 2, 3, 4...
-    var weight: Double = 0.0,                       // Weight in kg
-    var reps: Int = 0,                              // Number of repetitions
+    val setNumber: Int,
+    var weight: Double = 0.0,
+    var reps: Int = 0,
     var isCompleted: Boolean = false,
     val timestamp: Long = System.currentTimeMillis()
 ) {

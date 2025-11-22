@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.assignment3.adapters.ExerciseLibraryAdapter
 import com.example.assignment3.models.Exercise
-import com.example.assignment3.repository.WorkoutRepository
+import com.example.assignment3.repository.FirebaseRepository
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import kotlinx.coroutines.launch
@@ -22,10 +22,7 @@ class ExerciseLibraryActivity : AppCompatActivity() {
     private lateinit var chipGroup: ChipGroup
     private lateinit var rvExercises: RecyclerView
     private lateinit var exerciseAdapter: ExerciseLibraryAdapter
-
-    // ✅ ROOM REPOSITORY
-    private lateinit var repository: WorkoutRepository
-
+    private lateinit var repository: FirebaseRepository
     private var allExercises = listOf<Exercise>()
     private var filteredExercises = mutableListOf<Exercise>()
 
@@ -38,9 +35,6 @@ class ExerciseLibraryActivity : AppCompatActivity() {
         setContentView(R.layout.activity_exercise_library)
         supportActionBar?.hide()
 
-        android.util.Log.e("ExerciseLibrary", "🟢 ========== onCreate started ==========")
-
-        // ✅ GET REPOSITORY
         repository = (application as MyApplication).repository
 
         initViews()
@@ -59,15 +53,13 @@ class ExerciseLibraryActivity : AppCompatActivity() {
     }
 
     private fun loadExercises() {
-        // ✅ LOAD FROM DATABASE
+        // LOAD FROM DATABASE
         lifecycleScope.launch {
             try {
                 allExercises = repository.getAllExercises()
-                android.util.Log.e("ExerciseLibrary", "✅ Loaded ${allExercises.size} exercises from DB")
 
                 filterExercises("All")
             } catch (e: Exception) {
-                android.util.Log.e("ExerciseLibrary", "❌ Error loading exercises: ${e.message}")
                 e.printStackTrace()
             }
         }
@@ -95,9 +87,8 @@ class ExerciseLibraryActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
         exerciseAdapter = ExerciseLibraryAdapter(filteredExercises) { exercise ->
-            android.util.Log.e("ExerciseLibrary", "Clicked: ${exercise.name}")
 
-            // ✅ MỞ EXERCISE DETAIL
+            // OPEN EXERCISE DETAL
             val intent = Intent(this, ExerciseDetailActivity::class.java)
             intent.putExtra("EXERCISE_ID", exercise.id)
             startActivity(intent)
@@ -108,7 +99,6 @@ class ExerciseLibraryActivity : AppCompatActivity() {
     }
 
     private fun filterExercises(muscleGroup: String) {
-        android.util.Log.e("ExerciseLibrary", "Filtering by: $muscleGroup")
 
         filteredExercises.clear()
 
@@ -117,8 +107,6 @@ class ExerciseLibraryActivity : AppCompatActivity() {
         } else {
             filteredExercises.addAll(allExercises.filter { it.targetMuscle == muscleGroup })
         }
-
-        android.util.Log.e("ExerciseLibrary", "Filtered: ${filteredExercises.size} exercises")
 
         exerciseAdapter.notifyDataSetChanged()
     }

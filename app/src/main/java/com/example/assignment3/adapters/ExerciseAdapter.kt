@@ -10,21 +10,13 @@ import com.example.assignment3.R
 import com.example.assignment3.models.Exercise
 
 /**
- * ExerciseListAdapter - RecyclerView adapter for displaying exercises
- * Supports 2 modes:
- * 1. VIEW MODE (isSelectable = false) - Just display exercises, no checkboxes
- * 2. SELECTION MODE (isSelectable = true) - Allow selecting multiple exercises with checkboxes
- *
- * @param exercises - List of all available exercises
- * @param selectedExercises - Set to track which exercises are selected (only used in selection mode)
- * @param onSelectionChanged - Callback triggered when selection changes (only used in selection mode)
- * @param isSelectable - Whether checkboxes should be shown (true = selection mode, false = view mode)
+ RecyclerView adapter for displaying exercises
  */
 class ExerciseAdapter(
     private val exercises: List<Exercise>,
     private val selectedExercises: MutableSet<Exercise> = mutableSetOf(),
     private val onSelectionChanged: () -> Unit = {},
-    private val isSelectable: Boolean = true  // ✅ NEW: Default = true for backward compatibility
+    private val isSelectable: Boolean = true
 ) : RecyclerView.Adapter<ExerciseAdapter.ExerciseViewHolder>() {
 
     /**
@@ -58,7 +50,7 @@ class ExerciseAdapter(
         // Set exercise details (e.g., "4 sets × 8-10 reps • Chest")
         holder.tvExerciseDetails.text = "${exercise.sets} sets × ${exercise.reps} reps • ${exercise.targetMuscle}"
 
-        // ✅ HANDLE VIEW MODE vs SELECTION MODE
+        // HANDLE VIEW MODE vs SELECTION MODE
         if (isSelectable) {
             // SELECTION MODE - Show checkbox, allow selection
             holder.cbSelected.visibility = View.VISIBLE

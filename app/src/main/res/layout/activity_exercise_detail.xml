@@ -58,7 +58,7 @@
                 android:id="@+id/ivExerciseImage"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="centerCrop"
+                android:scaleType="fitCenter"
                 android:background="@color/secondary_gray"
                 android:contentDescription="Exercise demonstration"/>
 

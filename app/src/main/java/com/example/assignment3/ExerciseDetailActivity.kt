@@ -9,7 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.assignment3.models.Exercise
-import com.example.assignment3.repository.WorkoutRepository
+import com.example.assignment3.repository.FirebaseRepository
 import kotlinx.coroutines.launch
 
 class ExerciseDetailActivity : AppCompatActivity() {
@@ -26,7 +26,7 @@ class ExerciseDetailActivity : AppCompatActivity() {
     private lateinit var tvTips: TextView
     private lateinit var btnAddToWorkout: Button
 
-    private lateinit var repository: WorkoutRepository
+    private lateinit var repository: FirebaseRepository
     private var exercise: Exercise? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,7 +34,6 @@ class ExerciseDetailActivity : AppCompatActivity() {
         setContentView(R.layout.activity_exercise_detail)
         supportActionBar?.hide()
 
-        android.util.Log.e("ExerciseDetail", "🟢 ========== onCreate started ==========")
 
         repository = (application as MyApplication).repository
 
@@ -60,7 +59,6 @@ class ExerciseDetailActivity : AppCompatActivity() {
     private fun loadExercise() {
         val exerciseId = intent.getIntExtra("EXERCISE_ID", -1)
 
-        android.util.Log.e("ExerciseDetail", "Loading exercise ID: $exerciseId")
 
         if (exerciseId == -1) {
             Toast.makeText(this, "Exercise not found", Toast.LENGTH_SHORT).show()
@@ -88,9 +86,8 @@ class ExerciseDetailActivity : AppCompatActivity() {
     }
 
     private fun displayExercise(exercise: Exercise) {
-        android.util.Log.e("ExerciseDetail", "Displaying: ${exercise.name}")
 
-        // ✅ LOAD IMAGE FROM DRAWABLE (CÁCH 1)
+        // LOAD IMAGE FROM DRAWABLE
         loadExerciseImage(exercise)
 
         tvExerciseName.text = exercise.name
@@ -133,25 +130,22 @@ class ExerciseDetailActivity : AppCompatActivity() {
         }
     }
 
-    // ✅ CÁCH 1: LOAD FROM imageUrl (DRAWABLE NAME)
+    //LOAD FROM drawable
     private fun loadExerciseImage(exercise: Exercise) {
         val drawableId = if (exercise.imageUrl.isNotEmpty()) {
             // Try to find drawable by name from imageUrl
             val resId = resources.getIdentifier(
-                exercise.imageUrl,  // "ex_bench_press"
+                exercise.imageUrl,  // image
                 "drawable",         // resource type
                 packageName         // com.example.assignment3
             )
 
             if (resId != 0) {
-                android.util.Log.e("ExerciseDetail", "✅ Loaded drawable: ${exercise.imageUrl}")
                 resId
             } else {
-                android.util.Log.e("ExerciseDetail", "❌ Drawable not found: ${exercise.imageUrl}, using fallback")
                 R.drawable.dumbbell
             }
         } else {
-            android.util.Log.e("ExerciseDetail", "Empty imageUrl, using fallback")
             R.drawable.dumbbell
         }
 
