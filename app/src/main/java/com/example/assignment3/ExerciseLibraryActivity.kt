@@ -14,7 +14,9 @@ import com.example.assignment3.repository.FirebaseRepository
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import kotlinx.coroutines.launch
-
+import androidx.activity.result.contract.ActivityResultContracts
+import android.widget.Button
+import android.widget.Toast
 class ExerciseLibraryActivity : AppCompatActivity() {
 
     private lateinit var btnBack: ImageButton
@@ -43,6 +45,18 @@ class ExerciseLibraryActivity : AppCompatActivity() {
         loadExercises()
     }
 
+    private val addExerciseLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            lifecycleScope.launch {
+                kotlinx.coroutines.delay(300)
+                loadExercises() // Reload exercise list
+                Toast.makeText(this@ExerciseLibraryActivity, "Exercise list updated", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     private fun initViews() {
         btnBack = findViewById(R.id.btnBack)
         tvTitle = findViewById(R.id.tvTitle)
@@ -50,6 +64,13 @@ class ExerciseLibraryActivity : AppCompatActivity() {
         rvExercises = findViewById(R.id.rvExercises)
 
         btnBack.setOnClickListener { finish() }
+
+        // Add Exercise button
+        val btnAddExercise = findViewById<Button>(R.id.btnAddExercise)
+        btnAddExercise.setOnClickListener {
+            val intent = Intent(this, ExerciseFormActivity::class.java)
+            addExerciseLauncher.launch(intent)
+        }
     }
 
     private fun loadExercises() {
@@ -110,4 +131,5 @@ class ExerciseLibraryActivity : AppCompatActivity() {
 
         exerciseAdapter.notifyDataSetChanged()
     }
+
 }

@@ -13,7 +13,5 @@ class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        //Initialize Firebase exercises (first time only)
-        // Will be called from MainActivity
     }
 }

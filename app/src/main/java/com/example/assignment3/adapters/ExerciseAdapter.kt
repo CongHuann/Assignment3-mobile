@@ -39,7 +39,6 @@ class ExerciseAdapter(
 
     /**
      * Bind data to view holder at given position
-     * Displays different UI based on mode (view-only vs selection)
      */
     override fun onBindViewHolder(holder: ExerciseViewHolder, position: Int) {
         val exercise = exercises[position]

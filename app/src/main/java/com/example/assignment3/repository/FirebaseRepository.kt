@@ -265,8 +265,6 @@ class FirebaseRepository {
 
     /**
      * Remove exercise from specific day
-     *
-     * ✅ PRESERVES workoutType and isCompleted
      */
     suspend fun removeExerciseFromDay(dayIndex: Int, exerciseId: Int) = withContext(Dispatchers.IO) {
         try {
@@ -287,6 +285,55 @@ class FirebaseRepository {
 
         } catch (e: Exception) {
             e.printStackTrace()
+        }
+    }
+
+    // Add these methods to FirebaseRepository.kt
+
+    /**
+     * Add new exercise to Firestore
+     */
+    suspend fun addExercise(exercise: Exercise) = withContext(Dispatchers.IO) {
+        try {
+            val firebaseExercise = exercise.toFirebase()
+            exercisesCollection
+                .document(exercise.id.toString())
+                .set(firebaseExercise)
+                .await()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw e
+        }
+    }
+
+    /**
+     * Update existing exercise in Firestore
+     */
+    suspend fun updateExercise(exercise: Exercise) = withContext(Dispatchers.IO) {
+        try {
+            val firebaseExercise = exercise.toFirebase()
+            exercisesCollection
+                .document(exercise.id.toString())
+                .set(firebaseExercise)
+                .await()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw e
+        }
+    }
+
+    /**
+     * Delete exercise from Firestore
+     */
+    suspend fun deleteExercise(exerciseId: Int) = withContext(Dispatchers.IO) {
+        try {
+            exercisesCollection
+                .document(exerciseId.toString())
+                .delete()
+                .await()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw e
         }
     }
 

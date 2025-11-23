@@ -61,6 +61,12 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Assignment3" />
+
+        <activity
+            android:name=".ExerciseFormActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
+            android:exported="false" />
     </application>
 
 </manifest>

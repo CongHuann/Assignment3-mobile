@@ -1,11 +1,13 @@
 package com.example.assignment3
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.assignment3.models.Exercise
@@ -15,6 +17,7 @@ import kotlinx.coroutines.launch
 class ExerciseDetailActivity : AppCompatActivity() {
 
     private lateinit var btnBack: ImageButton
+    private lateinit var btnEdit: ImageButton
     private lateinit var ivExerciseImage: ImageView
     private lateinit var tvExerciseName: TextView
     private lateinit var tvDescription: TextView
@@ -29,11 +32,20 @@ class ExerciseDetailActivity : AppCompatActivity() {
     private lateinit var repository: FirebaseRepository
     private var exercise: Exercise? = null
 
+    // ✅ MOVE THIS HERE - Before onCreate()
+    private val editExerciseLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            loadExercise() // Reload exercise data
+            Toast.makeText(this, "Exercise updated", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_exercise_detail)
         supportActionBar?.hide()
-
 
         repository = (application as MyApplication).repository
 
@@ -42,8 +54,10 @@ class ExerciseDetailActivity : AppCompatActivity() {
         setupClickListeners()
     }
 
+
     private fun initViews() {
         btnBack = findViewById(R.id.btnBack)
+        btnEdit = findViewById(R.id.btnEdit)
         ivExerciseImage = findViewById(R.id.ivExerciseImage)
         tvExerciseName = findViewById(R.id.tvExerciseName)
         tvDescription = findViewById(R.id.tvDescription)
@@ -53,12 +67,10 @@ class ExerciseDetailActivity : AppCompatActivity() {
         tvSecondaryMuscles = findViewById(R.id.tvSecondaryMuscles)
         tvInstructions = findViewById(R.id.tvInstructions)
         tvTips = findViewById(R.id.tvTips)
-        btnAddToWorkout = findViewById(R.id.btnAddToWorkout)
     }
 
     private fun loadExercise() {
         val exerciseId = intent.getIntExtra("EXERCISE_ID", -1)
-
 
         if (exerciseId == -1) {
             Toast.makeText(this, "Exercise not found", Toast.LENGTH_SHORT).show()
@@ -86,8 +98,6 @@ class ExerciseDetailActivity : AppCompatActivity() {
     }
 
     private fun displayExercise(exercise: Exercise) {
-
-        // LOAD IMAGE FROM DRAWABLE
         loadExerciseImage(exercise)
 
         tvExerciseName.text = exercise.name
@@ -130,23 +140,21 @@ class ExerciseDetailActivity : AppCompatActivity() {
         }
     }
 
-    //LOAD FROM drawable
     private fun loadExerciseImage(exercise: Exercise) {
         val drawableId = if (exercise.imageUrl.isNotEmpty()) {
-            // Try to find drawable by name from imageUrl
             val resId = resources.getIdentifier(
-                exercise.imageUrl,  // image
-                "drawable",         // resource type
-                packageName         // com.example.assignment3
+                exercise.imageUrl,
+                "drawable",
+                packageName
             )
 
             if (resId != 0) {
                 resId
             } else {
-                R.drawable.dumbbell
+                R.drawable.loader
             }
         } else {
-            R.drawable.dumbbell
+            R.drawable.loader
         }
 
         ivExerciseImage.setImageResource(drawableId)
@@ -157,8 +165,12 @@ class ExerciseDetailActivity : AppCompatActivity() {
             finish()
         }
 
-        btnAddToWorkout.setOnClickListener {
-            Toast.makeText(this, "Feature coming soon! Go to Workout Planner to add exercises.", Toast.LENGTH_LONG).show()
+        btnEdit.setOnClickListener {
+            exercise?.let {
+                val intent = Intent(this, ExerciseFormActivity::class.java)
+                intent.putExtra("EXERCISE_ID", it.id)
+                editExerciseLauncher.launch(intent)
+            }
         }
     }
 }

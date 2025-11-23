@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/primary_black"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="24dp">
+
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/bg_circle_gray"
+                android:src="@drawable/arrow_big_left"
+                app:tint="@android:color/white"/>
+
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="16dp"
+                android:text="Add New Exercise"
+                android:textColor="@android:color/white"
+                android:textSize="24sp"
+                android:fontFamily="@font/opensans"/>
+        </LinearLayout>
+
+        <!-- Exercise Name -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Exercise Name *"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:fontFamily="@font/opensans"
+            android:layout_marginBottom="8dp"/>
+
+        <EditText
+            android:id="@+id/etExerciseName"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@drawable/bg_excercise_item"
+            android:hint="e.g., Bench Press"
+            android:textColorHint="#888888"
+            android:textColor="@android:color/white"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:fontFamily="@font/opensans"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Description -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Description"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:fontFamily="@font/opensans"
+            android:layout_marginBottom="8dp"/>
+
+        <EditText
+            android:id="@+id/etDescription"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="@drawable/bg_excercise_item"
+            android:hint="Brief description of the exercise"
+            android:textColorHint="#888888"
+            android:textColor="@android:color/white"
+            android:padding="16dp"
+            android:gravity="top"
+            android:fontFamily="@font/opensans"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Sets and Reps Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sets"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/opensans"
+                    android:layout_marginBottom="8dp"/>
+
+                <EditText
+                    android:id="@+id/etSets"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:background="@drawable/bg_excercise_item"
+                    android:hint="3"
+                    android:inputType="number"
+                    android:textColorHint="#888888"
+                    android:textColor="@android:color/white"
+                    android:gravity="center"
+                    android:fontFamily="@font/opensans"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reps"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/opensans"
+                    android:layout_marginBottom="8dp"/>
+
+                <EditText
+                    android:id="@+id/etReps"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:background="@drawable/bg_excercise_item"
+                    android:hint="10-12"
+                    android:textColorHint="#888888"
+                    android:textColor="@android:color/white"
+                    android:gravity="center"
+                    android:fontFamily="@font/opensans"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Target Muscle -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Target Muscle *"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:fontFamily="@font/opensans"
+            android:layout_marginBottom="8dp"/>
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none"
+            android:layout_marginBottom="16dp">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupMuscle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:singleSelection="true"
+                app:chipSpacing="8dp"/>
+        </HorizontalScrollView>
+
+        <!-- Difficulty -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Difficulty *"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:fontFamily="@font/opensans"
+            android:layout_marginBottom="8dp"/>
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroupDifficulty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:singleSelection="true"
+            app:chipSpacing="8dp"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Equipment -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Equipment"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:fontFamily="@font/opensans"
+            android:layout_marginBottom="8dp"/>
+
+        <EditText
+            android:id="@+id/etEquipment"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@drawable/bg_excercise_item"
+            android:hint="Barbell, Dumbbells, etc."
+            android:textColorHint="#888888"
+            android:textColor="@android:color/white"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:fontFamily="@font/opensans"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Instructions -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Instructions (one per line)"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:fontFamily="@font/opensans"
+            android:layout_marginBottom="8dp"/>
+
+        <EditText
+            android:id="@+id/etInstructions"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:background="@drawable/bg_excercise_item"
+            android:hint="Step 1&#10;Step 2&#10;Step 3"
+            android:textColorHint="#888888"
+            android:textColor="@android:color/white"
+            android:padding="16dp"
+            android:gravity="top"
+            android:fontFamily="@font/opensans"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Tips -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tips (one per line)"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:fontFamily="@font/opensans"
+            android:layout_marginBottom="8dp"/>
+
+        <EditText
+            android:id="@+id/etTips"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="@drawable/bg_excercise_item"
+            android:hint="Tip 1&#10;Tip 2"
+            android:textColorHint="#888888"
+            android:textColor="@android:color/white"
+            android:padding="16dp"
+            android:gravity="top"
+            android:fontFamily="@font/opensans"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Save Button -->
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="Add Exercise"
+            android:textColor="@color/accent_orange"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/opensans"
+            android:background="@drawable/bg_button_orange"/>
+
+    </LinearLayout>
+</ScrollView>

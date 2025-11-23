@@ -45,7 +45,7 @@ class WorkoutPlannerActivity : AppCompatActivity() {
                     // Mark day as completed
                     workoutData[dayIndex] = WorkoutDay(workout.workoutType, true)
 
-                    // ✅ SAVE SYNC với await
+                    // SAVE SYNC
                     lifecycleScope.launch {
                         try {
                             repository.updateWorkout(
@@ -53,7 +53,6 @@ class WorkoutPlannerActivity : AppCompatActivity() {
                                 workoutType = workout.workoutType,
                                 isCompleted = true
                             )
-                            // Update UI sau save thành công
                             updateWeekdaysUI()
                             if (dayIndex == selectedDayIndex) {
                                 loadWorkoutForDay(dayIndex)
@@ -127,10 +126,10 @@ class WorkoutPlannerActivity : AppCompatActivity() {
                         repository.addExerciseToDay(selectedDayIndex, ids[i])
                     }
 
-                    // ✅ WAIT FOR FIREBASE TO COMPLETE
+                    //WAIT FOR FIREBASE TO COMPLETE
                     kotlinx.coroutines.delay(300)
 
-                    // ✅ RELOAD FROM FIREBASE TO VERIFY
+                    //RELOAD FROM FIREBASE TO VERIFY
                     val exercises = repository.getExercisesForDay(selectedDayIndex)
                     exercisesMap[selectedDayIndex] = exercises.toMutableList()
                 } catch (e: Exception) {
@@ -498,7 +497,7 @@ class WorkoutPlannerActivity : AppCompatActivity() {
     // ==================== DIALOGS ====================
 
     /**
-     * Show edit options for a day (long-click menu)
+     * Show edit options for a day
      */
     private fun showEditDayDialog(dayIndex: Int) {
         val workout = workoutData[dayIndex] ?: return
@@ -609,10 +608,6 @@ class WorkoutPlannerActivity : AppCompatActivity() {
     }
 
     // ==================== DATA MODELS ====================
-
-    /**
-     * Data class representing a workout day
-     */
     data class WorkoutDay(
         val workoutType: String,
         val isCompleted: Boolean = false

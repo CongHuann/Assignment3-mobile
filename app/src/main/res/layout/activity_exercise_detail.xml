@@ -40,6 +40,15 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:fontFamily="@font/opensans"/>
+
+            <!-- ✅ ADDED EDIT BUTTON HERE -->
+            <ImageButton
+                android:id="@+id/btnEdit"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/bg_circle_gray"
+                android:src="@android:drawable/ic_menu_edit"
+                app:tint="@color/accent_orange"/>
         </LinearLayout>
 
         <!-- ✅ EXERCISE IMAGE/GIF -->
@@ -115,7 +124,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="The king of chest exercises..."
-                    android:textColor="#ABABAB"
+                    android:textColor="#36454F"
                     android:textSize="16sp"
                     android:fontFamily="@font/opensans"
                     android:layout_marginTop="16dp"
@@ -159,7 +168,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Secondary: Triceps, Shoulders"
-                    android:textColor="#ABABAB"
+                    android:textColor="#36454F"
                     android:textSize="14sp"
                     android:fontFamily="@font/opensans"
                     android:layout_marginTop="4dp"/>
@@ -227,20 +236,6 @@
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
-
-        <!-- Add to Workout Button -->
-        <Button
-            android:id="@+id/btnAddToWorkout"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_margin="16dp"
-            android:text="Add to Workout"
-            android:textColor="@android:color/black"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:fontFamily="@font/opensans"
-            android:background="@drawable/bg_button_orange"
-            app:layout_constraintTop_toBottomOf="@id/cardContent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
