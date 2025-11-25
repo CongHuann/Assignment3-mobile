@@ -14,6 +14,7 @@ import com.example.assignment3.models.Exercise
 import com.example.assignment3.repository.FirebaseRepository
 import kotlinx.coroutines.launch
 
+
 class ExerciseDetailActivity : AppCompatActivity() {
 
     private lateinit var btnBack: ImageButton
